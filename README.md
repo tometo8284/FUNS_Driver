@@ -29,4 +29,7 @@
 							
 ## 使用素材							
 - OpenStreetMap							
-  - URL:   https://www.openstreetmap.org/							
+  - URL:   https://www.openstreetmap.org/	
+
+### 実装機能リストurl
+- https://docs.google.com/spreadsheets/d/1dPPjgbInWCOUNw4gfn6e8G25g8DvT7Y8uSIHqVCfpJw/edit?usp=sharing
