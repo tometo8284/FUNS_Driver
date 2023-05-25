@@ -1,0 +1,8 @@
+ja:
+  enums:
+    user:
+      gender:
+        unknown: "指定なし"
+        man: "男性"
+        woman: "女性"
+        queer: "どちらでもない"

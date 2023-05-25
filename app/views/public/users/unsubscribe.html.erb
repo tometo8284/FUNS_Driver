@@ -1,0 +1,3 @@
+<h1>退会お手続き</h1>
+
+<%= link_to "退会する", withdrawl_path(@user.id), method: :patch, data: { confirm: "本当に退会しますか？"} %>

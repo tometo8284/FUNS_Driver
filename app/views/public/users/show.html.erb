@@ -1,0 +1,29 @@
+<h1>
+  <%= @user.nick_name %>
+  <% if @user == current_user %>
+    さんのマイページ
+  <% else %>
+    さんの紹介ページ
+  <% end %>
+</h1>
+
+<li>
+  自己紹介:
+  <%= @user.introduction %>
+</li>
+<li>
+  所在地:
+  <%= @user.address %>
+</li>
+<li>
+  年齢:
+  <%= @user.age %>
+</li>
+<li>
+  性別:
+  <%= @user.gender_i18n %>
+</li>
+
+<% if @user == current_user %>
+  <%= link_to "編集", edit_user_path(current_user.id) %>
+<% end %>

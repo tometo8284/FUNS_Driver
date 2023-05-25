@@ -1,0 +1,28 @@
+<h1><%= @user.name %>さんの編集ページ</h1>
+<%= form_with model: @user, url:user_path(@user.id), methode: :patch do |f| %>
+  <label>氏名</label>
+    <%= f.text_field :name, autofocus: true %>
+  <br />
+  <label>ニックネーム</label>
+    <%= f.text_field :nick_name, autofocus: true %>
+  <br />
+  <label>メールアドレス</label>
+    <%= f.text_field :email, autofocus: true %>
+  <br />
+  <label>自己紹介</label>
+    <%= f.text_area :introduction, autofocus: true %>
+  <br />
+  <label>所在地</label>
+    <%= f.text_field :address, autofocus: true %>
+  <br />
+  <label>年齢</label>
+    <%= f.text_field :age, autofocus: true %>
+  <br />
+  <label>性別</label>
+    <%= f.select :gender, User.genders.keys.map{|k| [t("enums.user.gender.#{k}"), k] } %>
+  
+  <%= f.submit"更新" %>  
+  
+<% end %>
+<%= link_to "戻る", user_path(@user.id) %>
+
