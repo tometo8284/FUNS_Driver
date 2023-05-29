@@ -30,10 +30,14 @@ class Public::UsersController < ApplicationController
     redirect_to root_path
   end
   
+  def user_post
+    @user = User.find(params[:id])
+    @posts = @user.posts
+  end
   
 private
   def user_params
-    params.require(:user).permit(:name, :nick_name, :email, :introduction, :address, :age, :gender, :is_deleted)
+    params.require(:user).permit(:name, :nick_name, :profile_image, :email, :introduction, :address, :age, :gender, :is_deleted)
   end
   
   def is_matching_login_user

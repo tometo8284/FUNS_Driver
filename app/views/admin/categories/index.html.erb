@@ -1,0 +1,21 @@
+<h1>カテゴリ一覧</h1>
+<p><%= notice %></p>
+  <%= form_with model: @category, url: admin_categories_path, method: :post do |f| %>
+  <label>カテゴリ名</label>
+    <%= f.text_field :name %>
+    <%= f.submit "新規登録" %>
+  <% end %>
+  <table>
+    <thead>
+      <th>カテゴリ</th>
+    </thead>
+    <tbody>
+    <% @categories.each do |category| %>
+      <tr>
+        <td><%= category.name %></td>
+        <td><%= link_to "編集", edit_admin_category_path(category.id) %></td>
+        <td><%= link_to "削除", admin_category_path(category.id), method: :delete %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>

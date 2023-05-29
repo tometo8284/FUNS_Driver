@@ -5,6 +5,10 @@
       <td><%= @user.id %></td>
     </tr>
     <tr>
+      <th></th>
+      <td><%= image_tag @user.get_profile_image, size:  "200x200" %></td>
+    </tr>
+    <tr>
       <th>ニックネーム</th>
       <td><%= @user.nick_name %></td>
     </tr>

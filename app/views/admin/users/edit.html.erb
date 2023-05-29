@@ -3,6 +3,7 @@
   <%= @user.name %><span>さんの会員情報編集</span>
 </h1>
 <%= form_with model: @user, url: admin_user_path(@user.id), method: :patch do |f| %>
+   <%= f.file_field :profile_image, accept: "image/*" %>
   <label>氏名</label>
     <%= f.text_field :name, autofocus: true %>
   <br />  

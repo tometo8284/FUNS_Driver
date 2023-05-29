@@ -1,0 +1,21 @@
+<h1><%= @user.name %>さんのドライブデータ</h1>
+  <% @posts.each do |post| %>
+    <% if @user == current_user %>
+      <%= post.is_deleted?? '非公開' : '公開' %>
+    <% end %>
+    <% if post.is_deleted == false || @user == current_user %>
+      <%= link_to post_path(post.id) do %>
+        <%= post.title %>
+      <% end %>
+      <table>
+        <tr>
+          <th>内容詳細</th>
+          <td><%= post.describe %></td>
+        </tr>
+        <tr>
+          <th>地域</th>
+        </tr>
+      </table>
+    <% end %>
+  <% end %>
+  

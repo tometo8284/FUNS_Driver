@@ -14,15 +14,18 @@ Rails.application.routes.draw do
   
   scope module: :public do
     root to: "homes#top" 
+    get 'users/:id/user_post', to: 'users#user_post', as: 'user_post'
     get 'users/:id/unsubscribe', to: 'users#unsubscribe'
     patch 'users/:id/withdrawl', to: 'users#withdrawl', as: 'withdrawl'
     resources :users, only: [:show, :edit, :update]
+    resources :posts, except: [:index]
    
   end 
   
   namespace :admin do
     root to: 'homes#top'
     resources :users, only: [:index, :show, :edit, :update]
+    resources :categories, only: [:create, :index, :edit, :update, :destroy]
   end
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

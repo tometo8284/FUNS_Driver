@@ -1,0 +1,30 @@
+<h1>ドライブデータ投稿</h1>
+  <%= form_with model: @post, url: posts_path, method: :post do |f| %>
+    <label>タイトル</label>
+      <%= f.text_field :title %>
+    <br />
+    <label>説明</label>
+      <%= f.text_area :describe %>
+    <br />
+    <label>カテゴリ選択</label>
+      <%= f.collection_select :category_id, Category.all, :id, :name %>
+    <br />
+    <label>地方選択</label>
+      <%= f.select :area, Post.areas.keys.map{|k| [t("enums.post.area.#{k}"), k] } %>
+    <br />
+    <label>都道府県選択</label>
+      <%= f.select :prefecture, Post.prefectures.keys.map{|k| [t("enums.post.prefecture.#{k}"), k] } %>
+    <br />
+    <label>地名</label>
+      <%= f.text_field :location %>
+    <br />
+    <label>乗り物区分</label>
+      <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] } %>
+    <br />
+    <%= f.radio_button :is_deleted, :false %>
+    <%= f.label :is_deleted, "公開" %> &nbsp;
+    <%= f.radio_button :is_deleted, :true %>
+    <%= f.label :is_deleted, "非公開" %>
+    <br />
+    <%= f.submit "投稿" %>
+  <% end %>
