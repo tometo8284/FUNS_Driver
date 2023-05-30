@@ -20,13 +20,14 @@ Rails.application.routes.draw do
     resources :users, only: [:show, :edit, :update]
     resources :posts, except: [:index] do
       resources :comments, only: [:create, :edit, :destroy]
-      resources :favs, only: [:create, :destroy]
+      resource :favs, only: [:create, :destroy]
     end
   end 
   
   namespace :admin do
     root to: 'homes#top'
     get 'users/:id/user_post', to: 'users#user_post', as: 'user_post'
+    get 'users/:id/comments', to: 'users#user_comment', as: 'user_comment'
     resources :users, only: [:index, :show, :edit, :update]
     resources :posts, only: [:show, :destroy] do
       resources :comments, only: [:destroy]

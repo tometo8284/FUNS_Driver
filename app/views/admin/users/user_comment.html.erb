@@ -1,0 +1,22 @@
+<h1><%= @user.nick_name %>さんのコメント一覧</h1>
+<table>
+  <thead>
+    <tr>
+      <th>コメントを付けたドライブデータ</th>
+      <th>投稿主</th>
+      <th>コメント内容</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @comments.each do |comment| %>
+    <tr>  
+      <td><%= comment.post.title %></td>
+      <td><%= comment.post.user.nick_name %></td>
+      <td><%= comment.post_comment %></td>
+      <td><%= link_to "削除", admin_post_comment_path(comment.post, comment.id), method: :delete %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+  

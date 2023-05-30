@@ -15,5 +15,13 @@
         <th>カテゴリ</th>
         <td><%= post.category.name %></td>
       </tr>
+      <tr>
+        <th>♥</th>
+        <td><%= post.favs.count %> いいね</td>
+      </tr>
+      <tr>
+        <th>コメント件数</th>
+        <td><%= post.comments.count %></td>
+      </tr>
     </table>
   <% end %>

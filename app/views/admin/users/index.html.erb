@@ -9,6 +9,7 @@
         <th>メールアドレス</th>
         <th>ステータス</th>
         <th colspan="1"></th>
+        <th colspan="1"></th>
       </tr>
     </thead>
     <tbody>
@@ -25,6 +26,7 @@
         <td><%= user.email %></td>
         <td><%= user.is_deleted?? '退会' : '有効' %></td>
         <td><%= link_to "投稿一覧", admin_user_post_path(user.id) %></td>
+        <td><%= link_to "コメント一覧", admin_user_comment_path(user.id) %></td>
       </tr>
     <% end %>
     </tbody>

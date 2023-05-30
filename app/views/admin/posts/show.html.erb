@@ -29,4 +29,15 @@
   </tr>
 </table>
 
- <%= link_to "削除", admin_post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
+ <%= link_to "投稿削除", admin_post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
+
+<div>
+  <p>♥<%= @post.favs.count %> いいね</p>
+  <P>コメント件数:<%= @post.comments.count %></P>
+  <% @post.comments.each do |comment| %>
+    <p><%= image_tag comment.user.get_profile_image, size: "50x50" %></p>
+    <%= comment.user.nick_name %>
+    <%= comment.created_at.strftime('%Y/%m/%d') %><%= comment.post_comment %>
+    <%= link_to "削除", admin_post_comment_path(comment.post, comment.id), method: :delete %>
+  <% end %>
+</div>

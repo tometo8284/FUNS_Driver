@@ -26,6 +26,11 @@ class Admin::UsersController < ApplicationController
     @posts = @user.posts
   end
   
+  def user_comment
+    @user = User.find(params[:id])
+    @comments = @user.comments
+  end
+  
   private
   
   def user_params

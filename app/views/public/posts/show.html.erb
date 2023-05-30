@@ -36,6 +36,19 @@
 <% end %>
 
 <div>
+  <% if @post.fav_by?(current_user) %>
+    <p>
+      <%= link_to post_favs_path(@post), method: :delete do %>
+        ♥<%= @post.favs.count %> いいね
+      <% end %>
+    </p>
+    <% else %>
+    <p>
+      <%= link_to post_favs_path(@post), method: :post do %>
+        ♡<%= @post.favs.count %> いいね
+      <% end %>
+    </p>
+  <% end %>
   <p>コメント件数:<%= @post.comments.count %></p>
   <% @post.comments.each do |comment| %>
     <p><%= image_tag comment.user.get_profile_image, size: "50x50" %></p>
