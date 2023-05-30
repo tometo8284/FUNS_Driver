@@ -1,4 +1,4 @@
-<h1><%= @user.name %>さんのドライブデータ</h1>
+<h1><%= @user.nick_name %>さんのドライブデータ一覧</h1>
   <% @posts.each do |post| %>
     <% if @user == current_user %>
       <%= post.is_deleted?? '非公開' : '公開' %>
@@ -9,11 +9,14 @@
       <% end %>
       <table>
         <tr>
-          <th>内容詳細</th>
-          <td><%= post.describe %></td>
+          <th>場所</th>
+          <td><%= post.area_i18n %></td>
+          <td><%= post.prefecture_i18n %></td>
+          <td><%= post.location %></td>
         </tr>
         <tr>
-          <th>地域</th>
+          <th>カテゴリ</th>
+          <td><%= post.category.name %></td>
         </tr>
       </table>
     <% end %>

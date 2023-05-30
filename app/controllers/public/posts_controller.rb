@@ -14,10 +14,14 @@ class Public::PostsController < ApplicationController
     end
   end
   
-    
   def show
-    @post = Post.find(params[:id])
-    @user = @post.user
+    @post = Post.find(params[:id]) 
+    @user = @post.user 
+    if @post.is_deleted == false || @user == current_user
+    else
+      redirect_to root_path
+    end
+    @comment = Comment.new
   end
 
   def edit
@@ -37,7 +41,8 @@ class Public::PostsController < ApplicationController
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
-    redirect_to posts_path
+    @user = @post.user
+    redirect_to user_post_path(@user.id)
   end
   
   private
@@ -45,9 +50,4 @@ class Public::PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :lat, :long, :vehicle, :is_deleted)
   end
-  
-  def user_params
-    params.require(:user).permit(:name, :nick_name, :profile_image, :email, :introduction, :address, :age, :gender, :is_deleted)
-  end
-  
 end

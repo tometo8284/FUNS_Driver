@@ -21,11 +21,14 @@ class Admin::UsersController < ApplicationController
     end
   end
   
+  def user_post
+    @user = User.find(params[:id])
+    @posts = @user.posts
+  end
   
   private
   
   def user_params
     params.require(:user).permit(:name, :nick_name, :profile_image, :email, :introduction, :address, :age, :gender, :is_deleted)
   end
-  
 end

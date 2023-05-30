@@ -30,3 +30,26 @@
       <td><%= @post.vehicle_i18n %></td>
     </tr>
   </table>
+<% if @user == current_user %>
+  <%= link_to "編集する", edit_post_path(@post.id) %>
+  <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
+<% end %>
+
+<div>
+  <p>コメント件数:<%= @post.comments.count %></p>
+  <% @post.comments.each do |comment| %>
+    <p><%= image_tag comment.user.get_profile_image, size: "50x50" %></p>
+    <%= comment.user.nick_name %>
+    <%= comment.created_at.strftime('%Y/%m/%d') %><%= comment.post_comment %>
+    <% if comment.user == current_user %>
+      <%= link_to "削除", post_comment_path(comment.post, comment.id), method: :delete %>
+    <% end %>
+  <% end %>
+</div>
+
+<div>
+  <%= form_with model: [@post, @comment] do |f| %>
+    <%= f.text_area :post_comment, placeholder: "コメントをここに" %>
+    <%= f.submit "送信する" %>
+  <% end %>
+</div>

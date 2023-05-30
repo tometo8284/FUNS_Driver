@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
   belongs_to :user
   belongs_to :category
+  has_many :comments, dependent: :destroy
+  has_many :favs, dependent: :destroy
   
   enum area: { dohoku: 0, kanto: 1, cyubu: 2, kinki: 3, cyugoku: 4, sikoku: 5, kyusyu_okinawa: 6 }
 

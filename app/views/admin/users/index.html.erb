@@ -3,11 +3,12 @@
     <thead>
       <tr>
         <th>会員ID</th>
-        <th colspan="2"></th>
+        <th colspan="1"></th>
         <th>氏名</th>
         <th>ニックネーム</th>
         <th>メールアドレス</th>
         <th>ステータス</th>
+        <th colspan="1"></th>
       </tr>
     </thead>
     <tbody>
@@ -23,7 +24,9 @@
         <td><%= user.nick_name %></td>
         <td><%= user.email %></td>
         <td><%= user.is_deleted?? '退会' : '有効' %></td>
+        <td><%= link_to "投稿一覧", admin_user_post_path(user.id) %></td>
       </tr>
     <% end %>
     </tbody>
   </table>
+  

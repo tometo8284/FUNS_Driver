@@ -1,0 +1,32 @@
+<h1><%= @post.title %>の詳細</h1>
+<%= @post.is_deleted?? '非公開' : '公開' %>
+<table>
+  <tr>
+    <th>投稿者</th>
+    <td>
+      <%= link_to admin_user_path(@user.id) do %>
+        <%= @post.user.nick_name %>
+      <% end %>
+    </td>
+  </tr>
+  <tr>
+    <th>ドライブメモ</th>
+    <td><%= @post.describe %></td>
+  </tr>
+  <tr>
+    <th>カテゴリ</th>
+    <td><%= @post.category.name %></td>
+  </tr>
+  <tr>
+    <th>エリア</th>
+    <td><%= @post.area_i18n %></td>
+　　<td><%= @post.prefecture_i18n %></td>
+　　<td><%= @post.location %></td>
+  </tr>
+  <tr>
+    <th>乗り物区分</th>
+     <td><%= @post.vehicle_i18n %></td>
+  </tr>
+</table>
+
+ <%= link_to "削除", admin_post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
