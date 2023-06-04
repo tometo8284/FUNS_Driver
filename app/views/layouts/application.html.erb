@@ -17,10 +17,13 @@
         <%= link_to "マイページ", user_path(current_user.id) %>
       </li>
       <li>
-        <%= link_to "自身の投稿一覧", user_post_path(current_user.id) %>
+        <%= link_to "自身の投稿を見る", user_post_path(current_user.id) %>
       </li>
       <li>
         <%= link_to "投稿する", new_post_path %> 
+      </li>
+      <li>
+        <%= link_to "投稿一覧", root_path %>
       </li>
       <li>
         <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
@@ -41,6 +44,9 @@
       </li>
       <li>
         <%= link_to "ログイン", new_user_session_path %>
+      </li>
+      <li>
+        <%= link_to "トップページ", root_path %>
       </li>
     <% end %>
     </header>

@@ -1,2 +1,62 @@
-<h1>Admin::Homes#top</h1>
-<p>Find me in app/views/admin/homes/top.html.erb</p>
+<p class="notice"><%= notice %></p>
+<h1>投稿一覧</h1>
+<h2>絞り込み</h2>
+<%= search_form_for @q, url: admin_root_path do |f| %>
+  <div>
+    <%= f.label :category_id_eq, 'カテゴリー' %>
+    <%= f.collection_select :category_id_eq, Category.where.not(id: 0), :id, :name, include_blank: '指定なし' %>
+    <%= f.label :area_eq, 'エリア' %>
+    <%= f.select :area_eq, Post.areas_i18n.invert.map{|k, v| [k, Post.areas[v]] }, include_blank: '指定なし' %>
+    <%= f.label :prefecture_eq, '都道府県' %>
+    <%= f.select :prefecture_eq, Post.prefectures_i18n.invert.map{|k, v| [k, Post.prefectures[v]] }, include_blank: '指定なし' %>
+    <%= f.label :vehicle_eq, '乗り物' %>
+    <%= f.select :vehicle_eq, Post.vehicles_i18n.invert.map{|k, v| [k, Post.vehicles[v]] }, include_blank: '指定なし' %>
+  </div>
+  <span>
+    <%= f.label :location_cont, 'ピンポイントエリア検索' %>
+    <%= f.search_field :location_cont %>
+  </span>
+  <div>
+    <%= f.submit "検索" %>
+  </div>
+  <div>
+    <%= sort_link(@q, :created_at, '新着順') %>
+    <%= sort_link(@q, :favs_count, 'いいね数順') %>
+    <%= sort_link(@q, :comments_count, 'コメント数順') %>
+  </div>
+<% end %>
+
+<h2>一覧</h2>
+<% @posts.each do |post| %>
+  <%= link_to post_path(post.id) do %>
+    <%= post.title %>
+  <% end %>
+  <table>
+    <tr>
+      <th>投稿者</th>
+      <td><%= post.user.nick_name %></td>
+    </tr>
+    <tr>
+      <th>場所</th>
+      <td><%= post.area_i18n %></td>
+      <td><%= post.prefecture_i18n %></td>
+      <td><%= post.location %></td>
+    </tr>
+    <tr>
+      <th>カテゴリ</th>
+      <td><%= post.category.name %></td>
+    </tr>
+    <tr>
+      <th>♥</th>
+      <td><%= post.favs.count %> いいね</td>
+    </tr>
+    <tr>
+      <th>コメント件数</th>
+      <td><%= post.comments.count %></td>
+    </tr>
+    <tr>
+      <th>公開/非公開</th>
+      <td><%= post.is_deleted?? '非公開' : '公開' %></td>
+    </tr>
+  </table>
+<% end %>
