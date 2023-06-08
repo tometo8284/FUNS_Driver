@@ -7,7 +7,6 @@ class Public::PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
     @post.user_id = current_user.id
-    gon.describe = @post.describe
     if @post.save
        redirect_to @post
        flash[:notice] = "投稿を追加しました"

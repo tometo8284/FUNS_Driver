@@ -20,9 +20,9 @@
     <br />
     <%= f.fields_for :maps do |kf| %>
     <label>緯度</label>
-      <%= kf.text_field :lat, :value => "", id: :lat %>
+      <%= kf.text_field :lat, value: 0 %>
     <label>経度</label>
-      <%= kf.text_field :lng, :value => "", id: :lng  %>
+      <%= kf.text_field :lng, value: 0 %>
     <br />
     <% end %>
     <label>乗り物区分</label>
@@ -62,8 +62,11 @@
     }
   
     let geocoder
-    let marker = [];
+    let marker
     let infoWindow
+    var map_lat
+    var map_lng
+    
     function codeAddress(){
     let inputAddress = document.getElementById('address').value;
       geocoder.geocode( { 'address': inputAddress}, function(results, status) {
@@ -76,22 +79,29 @@
             draggable: true,	// ドラッグ可能にする
           });
         
-         //右クリックでさらにマーカーを作成 
+         //右クリックでさらにマーカーを作成
+        
+            
+         
+           
+     
          map.addListener('rightclick', function(e){
             var marker = new google.maps.Marker({
             position: e.latLng,
             map: map,
             title: e.latLng.toString(),
             animation: google.maps.Animation.DROP,
-            draggable: true
             });   
             
+            for(let i = 1; i < 5; i++){ 
             
-            // マーカーを増やすと同時に緯度経度を取得
-            document.getElementById('lat').value = e.latLng.lat();
-            document.getElementById('lng').value = e.latLng.lng();
-            
-            
+            if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
+                document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
+                document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng();
+                 i = 5; 
+            }
+                
+              
             //追加したマーカーの削除
             marker.addListener('rightclick', function(){
             this.setMap(null);
@@ -100,13 +110,9 @@
             marker.addListener('click', function() { // マーカーをクリックしたとき
             infoWindow.open(map, marker); // 吹き出しの表示
             });
-            
-            google.maps.event.addListener( marker, 'dragend', function(ev){
-            // イベントの引数evの、プロパティ.latLngが緯度経度
-            document.getElementById('lat').value = ev.latLng.lat();
-            document.getElementById('lng').value = ev.latLng.lng();
-            });
+            }  
           });
+         
          
         　  
           infoWindow = new google.maps.InfoWindow({
@@ -117,14 +123,14 @@
           });
          
         //検索した時に緯度経度を入力する
-          document.getElementById('lat').value = results[0].geometry.location.lat();
-          document.getElementById('lng').value = results[0].geometry.location.lng();
+          document.getElementById('post_maps_attributes_0_lat').value = results[0].geometry.location.lat();
+          document.getElementById('post_maps_attributes_0_lng').value = results[0].geometry.location.lng();
 
         // マーカーのドロップ（ドラッグ終了）時のイベント
           google.maps.event.addListener( marker, 'dragend', function(ev){
             // イベントの引数evの、プロパティ.latLngが緯度経度
-            document.getElementById('lat').value = ev.latLng.lat();
-            document.getElementById('lng').value = ev.latLng.lng();
+            document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
+            document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
           });
     } else {
       alert('該当する結果がありませんでした：' + status);
