@@ -61,3 +61,10 @@ gem 'enum_help'
 
 gem 'ransack'
 
+gem 'dotenv-rails'
+
+gem 'geocoder'
+
+gem 'gmaps4rails'
+
+gem 'gon'

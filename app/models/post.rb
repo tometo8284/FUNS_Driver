@@ -3,7 +3,25 @@ class Post < ApplicationRecord
   belongs_to :category
   has_many :comments, dependent: :destroy
   has_many :favs, dependent: :destroy
+  has_many :maps, dependent: :destroy
+  accepts_nested_attributes_for :maps, reject_if: :blank_lat_lng
+  has_one_attached :image
   
+  def blank_lat_lng(attributes)
+    empty = !attributes['lat'].present? || !attributes['lng'].present?
+    exists = attributes['id'].present?
+    attributes.merge!(_destroy: 1) if exists && empty
+    !exists && empty
+  end
+  
+  def get_image
+    unless image.attached?
+      file_path = Rails.root.join('app/assets/images/no_fhoto.jpg')
+      image.attach(io: File.open(file_path), filename: 'default-image.jpg', content_type: 'image/jpeg')
+    end
+    image.variant(resize_to_limit: [200, 200]).processed
+  end
+    
   def fav_by?(user)
     favs.exists?(user_id: user.id)
   end

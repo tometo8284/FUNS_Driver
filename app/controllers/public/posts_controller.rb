@@ -1,11 +1,13 @@
 class Public::PostsController < ApplicationController
   def new
     @post = Post.new
+    5.times { @post.maps.build }
   end
 
   def create
     @post = Post.new(post_params)
     @post.user_id = current_user.id
+    gon.describe = @post.describe
     if @post.save
        redirect_to @post
        flash[:notice] = "投稿を追加しました"
@@ -48,6 +50,6 @@ class Public::PostsController < ApplicationController
   private
   
   def post_params
-    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :lat, :long, :vehicle, :is_deleted)
+    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:lat, :lng])
   end
 end

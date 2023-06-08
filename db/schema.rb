@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_30_080528) do
+ActiveRecord::Schema.define(version: 2023_06_06_085847) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -73,6 +73,14 @@ ActiveRecord::Schema.define(version: 2023_05_30_080528) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "maps", force: :cascade do |t|
+    t.integer "post_id", null: false
+    t.float "lat"
+    t.float "lng"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "category_id"
@@ -81,8 +89,6 @@ ActiveRecord::Schema.define(version: 2023_05_30_080528) do
     t.integer "area", null: false
     t.integer "prefecture", null: false
     t.string "location", null: false
-    t.float "lat"
-    t.float "long"
     t.integer "vehicle"
     t.boolean "is_deleted", default: false, null: false
     t.datetime "created_at", precision: 6, null: false

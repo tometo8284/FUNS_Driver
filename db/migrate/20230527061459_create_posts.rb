@@ -8,8 +8,6 @@ class CreatePosts < ActiveRecord::Migration[6.1]
       t.integer :area, null: false
       t.integer :prefecture, null: false
       t.string :location, null: false
-      t.float :lat
-      t.float :long
       t.integer :vehicle
       t.boolean :is_deleted, null: false, default: false
       t.timestamps null: false

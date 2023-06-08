@@ -68,3 +68,8 @@
     <%= f.submit "送信する" %>
   <% end %>
 </div>
+
+<script>
+  var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
+  console.log(markerData)
+</script>

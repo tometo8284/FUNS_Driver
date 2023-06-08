@@ -4,7 +4,7 @@
       <%= f.text_field :title %>
     <br />
     <label>説明</label>
-      <%= f.text_area :describe %>
+      <%= f.text_area :describe,:value =>"", id: :describe %>
     <br />
     <label>カテゴリ選択</label>
       <%= f.collection_select :category_id, Category.all, :id, :name %>
@@ -18,6 +18,13 @@
     <label>地名</label>
       <%= f.text_field :location %>
     <br />
+    <%= f.fields_for :maps do |kf| %>
+    <label>緯度</label>
+      <%= kf.text_field :lat, :value => "", id: :lat %>
+    <label>経度</label>
+      <%= kf.text_field :lng, :value => "", id: :lng  %>
+    <br />
+    <% end %>
     <label>乗り物区分</label>
       <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] } %>
     <br />
@@ -26,5 +33,108 @@
     <%= f.radio_button :is_deleted, :true %>
     <%= f.label :is_deleted, "非公開" %>
     <br />
-    <%= f.submit "投稿" %>
-  <% end %>
+    
+  
+  
+  <h2>Map</h2>
+    <input id="address" type="textbox" value="住所を入力">
+    <input type="button" value="検索" onclick="codeAddress()">
+    <p>マーカーをドラック＆ドロップで位置の調整ができます。<p>
+    <div id='map'></div>
+
+  <style>
+    #map {
+      height: 600px;
+      width: 600px;
+    }
+  </style>
+
+  <script>
+    //初期マップの設定
+    let map
+    function initMap(){
+      geocoder = new google.maps.Geocoder()
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center:  {lat: 35.6803997, lng:139.7690174},  //東京
+        zoom: 15,
+      });
+    }
+  
+    let geocoder
+    let marker = [];
+    let infoWindow
+    function codeAddress(){
+    let inputAddress = document.getElementById('address').value;
+      geocoder.geocode( { 'address': inputAddress}, function(results, status) {
+      if (status == 'OK') {
+        //検索時にマーカーを作成する
+        map.setCenter(results[0].geometry.location);
+          marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+            draggable: true,	// ドラッグ可能にする
+          });
+        
+         //右クリックでさらにマーカーを作成 
+         map.addListener('rightclick', function(e){
+            var marker = new google.maps.Marker({
+            position: e.latLng,
+            map: map,
+            title: e.latLng.toString(),
+            animation: google.maps.Animation.DROP,
+            draggable: true
+            });   
+            
+            
+            // マーカーを増やすと同時に緯度経度を取得
+            document.getElementById('lat').value = e.latLng.lat();
+            document.getElementById('lng').value = e.latLng.lng();
+            
+            
+            //追加したマーカーの削除
+            marker.addListener('rightclick', function(){
+            this.setMap(null);
+            });
+            
+            marker.addListener('click', function() { // マーカーをクリックしたとき
+            infoWindow.open(map, marker); // 吹き出しの表示
+            });
+            
+            google.maps.event.addListener( marker, 'dragend', function(ev){
+            // イベントの引数evの、プロパティ.latLngが緯度経度
+            document.getElementById('lat').value = ev.latLng.lat();
+            document.getElementById('lng').value = ev.latLng.lng();
+            });
+          });
+         
+        　  
+          infoWindow = new google.maps.InfoWindow({
+            content: ('describe') 
+          })
+          marker.addListener('click', function() { // マーカーをクリックしたとき
+            infoWindow.open(map, marker); // 吹き出しの表示
+          });
+         
+        //検索した時に緯度経度を入力する
+          document.getElementById('lat').value = results[0].geometry.location.lat();
+          document.getElementById('lng').value = results[0].geometry.location.lng();
+
+        // マーカーのドロップ（ドラッグ終了）時のイベント
+          google.maps.event.addListener( marker, 'dragend', function(ev){
+            // イベントの引数evの、プロパティ.latLngが緯度経度
+            document.getElementById('lat').value = ev.latLng.lat();
+            document.getElementById('lng').value = ev.latLng.lng();
+          });
+    } else {
+      alert('該当する結果がありませんでした：' + status);
+    }
+  }); 
+    }
+  
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+  <%= f.submit "投稿" %>
+<% end %>

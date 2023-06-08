@@ -28,7 +28,7 @@
 
 <h2>一覧</h2>
 <% @posts.each do |post| %>
-  <%= link_to post_path(post.id) do %>
+  <%= link_to admin_post_path(post.id) do %>
     <%= post.title %>
   <% end %>
   <table>
