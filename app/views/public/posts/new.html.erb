@@ -3,6 +3,9 @@
     <label>タイトル</label>
       <%= f.text_field :title %>
     <br />
+    <label>TOP画像</label>
+      <%= f.file_field :image, accept: "image/*" %>
+    <br />
     <label>説明</label>
       <%= f.text_area :describe,:value =>"", id: :describe %>
     <br />
@@ -22,7 +25,8 @@
     <label>緯度</label>
       <%= kf.text_field :lat, value: 0 %>
     <label>経度</label>
-      <%= kf.text_field :lng, value: 0 %>
+      <%= kf.text_field :lng, value: 0 %> 
+    <%= kf.file_field :marker_image, accept: "image/*", multiple: true %>
     <br />
     <% end %>
     <label>乗り物区分</label>
@@ -37,9 +41,10 @@
   
   
   <h2>Map</h2>
-    <input id="address" type="textbox" value="住所を入力">
+    <input id="address" type="textbox" placeholder="住所を入力">
     <input type="button" value="検索" onclick="codeAddress()">
-    <p>マーカーをドラック＆ドロップで位置の調整ができます。<p>
+    <p>赤色マーカーをドラック＆ドロップで位置の調整ができます。<br />
+    右クリックで黄色マーカー<p>
     <div id='map'></div>
 
   <style>
@@ -62,80 +67,92 @@
     }
   
     let geocoder
-    let marker
-    let infoWindow
-    var map_lat
-    var map_lng
-    
+    let mainmarker
+    let marker 
+    let maininfoWindow
+    let infoWindow 
+    let aft
     function codeAddress(){
     let inputAddress = document.getElementById('address').value;
       geocoder.geocode( { 'address': inputAddress}, function(results, status) {
       if (status == 'OK') {
+        // trueになればマーカーを複製できないようにする
+        if (aft == true){
+          marker.setMap(null);
+        }
         //検索時にマーカーを作成する
         map.setCenter(results[0].geometry.location);
-          marker = new google.maps.Marker({
+          mainmarker = new google.maps.Marker({
             map: map,
             position: results[0].geometry.location,
-            draggable: true,	// ドラッグ可能にする
+            draggable: true	// ドラッグ可能にする
           });
-        
+          
+          
+          maininfoWindow = new google.maps.InfoWindow({
+            position: results[0].geometry.location ,
+            content: (document.getElementById(`post_maps_attributes_0_marker_image`))
+          });
+          mainmarker.addListener('click', function() { // マーカーをクリックしたとき
+            maininfoWindow.open(map, mainmarker); // 吹き出しの表示
+          });  
+          
          //右クリックでさらにマーカーを作成
-        
-            
-         
-           
-     
-         map.addListener('rightclick', function(e){
-            var marker = new google.maps.Marker({
+        map.addListener('rightclick', function(e){
+          var marker = new google.maps.Marker({
             position: e.latLng,
             map: map,
+            icon: "https://maps.google.com/mapfiles/ms/micons/yellow-dot.png",
             title: e.latLng.toString(),
-            animation: google.maps.Animation.DROP,
-            });   
-            
-            for(let i = 1; i < 5; i++){ 
-            
+            animation: google.maps.Animation.DROP
+          });
+          
+        
+          // 5回処理を繰り返す
+          for(let i = 1; i < 5; i++) {
             if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
                 document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
-                document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng();
-                 i = 5; 
-            }
-                
-              
-            //追加したマーカーの削除
-            marker.addListener('rightclick', function(){
-            this.setMap(null);
-            });
+                document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng(); 
+                infoWindow = new google.maps.InfoWindow({
+                  content:  (document.getElementById(`post_maps_attributes_${i}_marker_image`))
+                }); 
+                marker.addListener('click', function() { // マーカーをクリックしたとき
+            　   infoWindow.open(map, marker); // 吹き出しの表示
+                });  
+               
+            i = 5; }
+            else if (document.getElementById(`post_maps_attributes_4_lat`).value != 0) {
+            marker.setMap(null); }
+          }
             
-            marker.addListener('click', function() { // マーカーをクリックしたとき
-            infoWindow.open(map, marker); // 吹き出しの表示
+            //追加したマーカーの削除
+            for(let i = 1; i < 5; i++){
+            marker.addListener('rightclick', function(){
+             if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) { 
+                marker.setMap(null); 
+                  document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
+                  document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+                } 
             });
-            }  
-          });
-         
-         
-        　  
-          infoWindow = new google.maps.InfoWindow({
-            content: ('describe') 
-          })
-          marker.addListener('click', function() { // マーカーをクリックしたとき
-            infoWindow.open(map, marker); // 吹き出しの表示
-          });
-         
+           }
+        });
+          
+          
+          aft = true
         //検索した時に緯度経度を入力する
           document.getElementById('post_maps_attributes_0_lat').value = results[0].geometry.location.lat();
-          document.getElementById('post_maps_attributes_0_lng').value = results[0].geometry.location.lng();
-
+          document.getElementById('post_maps_attributes_0_lng').value = results[0].geometry.location.lng(); 
+          
         // マーカーのドロップ（ドラッグ終了）時のイベント
-          google.maps.event.addListener( marker, 'dragend', function(ev){
+          google.maps.event.addListener( mainmarker, 'dragend', function(ev){
             // イベントの引数evの、プロパティ.latLngが緯度経度
             document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
             document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
           });
-    } else {
-      alert('該当する結果がありませんでした：' + status);
-    }
-  }); 
+      } else {
+          alert('該当する結果がありませんでした：' + status);
+        }
+    }); 
     }
   
 

@@ -2,6 +2,8 @@
 <% if @user == current_user %>
   <%= @post.is_deleted?? '非公開' : '公開' %>
 <% end %>
+<br />
+<%= image_tag @post.get_image, size: "200x200" %>
   <table>
     <tr>
       <th>投稿者</th>
@@ -30,6 +32,64 @@
       <td><%= @post.vehicle_i18n %></td>
     </tr>
   </table>
+  
+  <div id='map'></div>
+  <style>
+    #map {
+      height: 600px;
+      width: 500px;
+    }
+  </style>
+  <script>
+    let map
+    let geocoder
+    let marker = [];
+    let infoWindow = [];
+    <%# byebug %>
+    var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
+    var imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
+    function initMap() {
+      //初期表示位置
+      geocoder = new google.maps.Geocoder()
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: markerData[0],
+        zoom: 15
+      });
+      for(var i = 0; i < markerData.length; i++) {
+        let id = markerData[i]['id']
+      
+
+      // 各地点の緯度経度を算出
+      markerLatLng = new google.maps.LatLng({
+        lat: markerData[i]['lat'],
+        lng: markerData[i]['lng']
+      });
+
+      // 各地点のマーカーを作成
+      marker[i] = new google.maps.Marker({
+        position: markerLatLng,
+        map: map
+      });
+      
+      infoWindow[i] = new google.maps.InfoWindow({
+        // 吹き出しの内容
+        content: '<img src="' + imageData[i]['get_marker_image'] + '">'
+      }); 
+         markerEvent(i);
+      }
+      
+       function markerEvent(i) {
+         marker[i].addListener('click', function () {
+         infoWindow[i].open(map, marker[i]);
+       });
+      
+      }
+      
+     }
+    
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+
 <% if @user == current_user %>
   <%= link_to "編集する", edit_post_path(@post.id) %>
   <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
@@ -70,6 +130,8 @@
 </div>
 
 <script>
-  var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
-  console.log(markerData)
+  //var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
+  //console.log(markerData)
+  //var imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
 </script>
+

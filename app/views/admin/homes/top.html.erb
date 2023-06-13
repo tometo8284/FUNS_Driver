@@ -31,6 +31,7 @@
   <%= link_to admin_post_path(post.id) do %>
     <%= post.title %>
   <% end %>
+  <%= image_tag post.get_image, size: "100x100" %>
   <table>
     <tr>
       <th>投稿者</th>
