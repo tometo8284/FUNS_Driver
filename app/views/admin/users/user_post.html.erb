@@ -4,6 +4,7 @@
   <%= link_to admin_post_path(post.id) do %>
     <%= post.title %>
   <% end %>
+  <%= image_tag post.get_image, size: "200x200" %>
     <table>
       <tr>
         <th>場所</th>

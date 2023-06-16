@@ -3,6 +3,9 @@
 <label>タイトル</label>
   <%= f.text_field :title, autofocus: true %>
 <br />
+<label>TOP画像</label>
+  <%= f.file_field :image %>
+<br />
 <label>説明</label>
   <%= f.text_area :describe, autofocus: true %>
 <br />
@@ -18,6 +21,17 @@
 <label>地名</label>
   <%= f.text_field :location, autofocus: true %>
 <br />
+<%= f.fields_for :maps, @post.maps do |kf| %>
+    <label>緯度</label>
+      <%= kf.text_field :lat, autofocus: true %>
+    <label>経度</label>
+      <%= kf.text_field :lng, autofocus: true %> 
+    <%= kf.file_field :marker_image, accept: "image/*" %>
+    <br />
+    <label>マーカーの説明</label>
+      <%= kf.text_area :marker_describe, autofocus: true %>
+    <br />
+    <% end %>
 <label>乗り物区分</label>
   <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] }, autofocus: true %> 
 <br />
@@ -26,6 +40,137 @@
   <%= f.radio_button :is_deleted, :true %>
   <%= f.label :is_deleted, "非公開" %>
 <br />
+
+<h2>Map</h2>
+    <input id="address" type="textbox" placeholder="住所を入力">
+    <input type="button" value="検索" onclick="codeAddress()">
+    <p>赤色マーカーをドラック＆ドロップで位置の調整ができます。<br />
+    右クリックで黄色マーカー<p>
+    <div id='map'></div>
+
+ <style>
+    #map {
+      height: 600px;
+      width: 1000px;
+    }
+  </style>
+
+ <script>
+    let map
+    let geocoder
+    let marker = [];
+    let infoWindow = [];
+    let aft 
+    var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
+    var imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
+    var describeData = <%== @post.maps.map {|o| { marker_describe: o['marker_describe'] }}.to_json %>
+    function initMap() {
+      //初期表示位置
+       
+      geocoder = new google.maps.Geocoder()
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: markerData[0],
+        zoom: 13
+      });
+    
+      for(var i = 0; i < markerData.length; i++) {
+        let id = markerData[i]['id']
+      
+
+      // 各地点の緯度経度を算出
+      markerLatLng = new google.maps.LatLng({
+        lat: markerData[i]['lat'],
+        lng: markerData[i]['lng']
+      });
+　　　
+      // 各地点のマーカーを作成
+      marker[i] = new google.maps.Marker({
+        position: markerLatLng,
+        map: map,
+        draggable: true
+      });
+      
+      infoWindow[i] = new google.maps.InfoWindow({
+        // 吹き出しの内容
+        content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
+      }); 
+         markerEvent(i);
+      
+      }
+      function markerEvent(i) {
+        marker[i].addListener('click', function () {
+        infoWindow[i].open(map, marker[i]);
+        });
+      }
+      
+        for(let i = 0; i < 5; i++) {
+        // マーカーのドラッグ終了時のイベント
+          google.maps.event.addListener( marker[i], 'dragend', function(ev){
+            document.getElementById(`post_maps_attributes_${i}_lat`).value = ev.latLng.lat();
+            document.getElementById(`post_maps_attributes_${i}_lng`).value = ev.latLng.lng(); 
+          });
+        }
+        //メインマーカーは消させたくない為、i = 1を指定
+        for(let i = 1; i < 5; i++){
+          marker[i].addListener('rightclick', function(){  
+            marker[i].setMap(null); 
+              document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
+              document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+            });
+        }
+        
+        // 以下追加したマーカーの挙動
+        map.addListener('rightclick', function(e){
+            let marker = new google.maps.Marker({
+            position: e.latLng,
+            map: map,
+            icon: "https://maps.google.com/mapfiles/ms/micons/yellow-dot.png",
+            title: e.latLng.toString(),
+            animation: google.maps.Animation.DROP
+          });
+        
+          for(let i = 1; i < 5; i++) {
+            if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
+                document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
+                document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng();
+            
+            
+            infoWindow = new google.maps.InfoWindow({
+              content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
+            });
+          
+            marker.addListener('click', function() { // マーカーをクリックしたとき
+            infoWindow.open(map, marker); // 吹き出しの表示
+            }); 
+            
+            return; }
+            
+            else if (document.getElementById(`post_maps_attributes_4_lat`).value != 0) {
+            marker.setMap(null); }
+          
+        
+            marker.addListener('rightclick', function(){ 
+            
+              if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
+                  marker.setMap(null); 
+                  document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
+                  document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+              }
+            
+            });
+            }
+          
+        });
+      
+    }
+    
+    
+    
+    
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+
 <%= f.submit "変更を保存" %>
 <% end %>
 
+<%= link_to "戻る", post_path(@post) %>

@@ -4,7 +4,7 @@ class CreateMaps < ActiveRecord::Migration[6.1]
       t.integer :post_id, null: false
       t.float :lat
       t.float :lng
-      t.timestamps
+      t.text :marker_describe
     end
   end
 end

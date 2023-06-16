@@ -18,6 +18,7 @@ class Public::PostsController < ApplicationController
   def show
     @post = Post.find(params[:id]) 
     @user = @post.user 
+    @maps = @post.maps
     if @post.is_deleted == false || @user == current_user
     else
       redirect_to root_path
@@ -49,6 +50,6 @@ class Public::PostsController < ApplicationController
   private
   
   def post_params
-    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:lat, :lng, marker_image: []])
+    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :marker_describe, marker_image: []])
   end
 end
