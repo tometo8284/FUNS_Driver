@@ -73,7 +73,7 @@
         zoom: 13
       });
     
-      for(var i = 0; i < markerData.length; i++) {
+      for(let i = 0; i < markerData.length; i++) {
         let id = markerData[i]['id']
       
 
@@ -120,47 +120,45 @@
         }
         
         // 以下追加したマーカーの挙動
-        map.addListener('rightclick', function(e){
-            let marker = new google.maps.Marker({
+       
+        map.addListener('rightclick', function(e){ 
+          for(let i = 1; i < 5; i++){
+            var marker = new google.maps.Marker({
             position: e.latLng,
             map: map,
-            icon: "https://maps.google.com/mapfiles/ms/micons/yellow-dot.png",
-            title: e.latLng.toString(),
+            icon: 'https://mt.google.com/vt/icon/name=icons/onion/SHARED-mymaps-container_4x.png,icons/onion/1738-blank-sequence_4x.png&highlight=880e4f,ff000000&scale=2.0&color=ffffffff&psize=15&text= '+ i.toString() +' &font=fonts/Roboto-Medium.ttf' ,
             animation: google.maps.Animation.DROP
           });
-        
-          for(let i = 1; i < 5; i++) {
+          
+          
+            //for(let i = 1; i < 5; i++) {
             if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
                 document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
                 document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng();
-            
-            
-            infoWindow = new google.maps.InfoWindow({
-              content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
-            });
-          
-            marker.addListener('click', function() { // マーカーをクリックしたとき
-            infoWindow.open(map, marker); // 吹き出しの表示
-            }); 
-            
-            return; }
+            i = 5; }
             
             else if (document.getElementById(`post_maps_attributes_4_lat`).value != 0) {
             marker.setMap(null); }
-          
-        
-            marker.addListener('rightclick', function(){ 
-            
-              if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
-                  marker.setMap(null); 
-                  document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
-                  document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
-              }
-            
-            });
             }
+           
+          
+           marker.addListener('rightclick', function(e){ 
+           for(let i = 1; i < 5; i++) {
+              if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
+                 marker.setMap(null); 
+                 document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
+                 document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+              }
+            }
+            });
+            
+          
+          
+            
           
         });
+      
+       
       
     }
     
