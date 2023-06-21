@@ -35,6 +35,13 @@ class Public::UsersController < ApplicationController
     @posts = @user.posts.order("created_at desc")
   end
   
+  def user_fav
+    @user = User.find(params[:id])
+    @favs = @user.favs.order("created_at desc")
+  end
+  
+  
+  
 private
   def user_params
     params.require(:user).permit(:name, :nick_name, :profile_image, :email, :introduction, :address, :age, :gender, :is_deleted)

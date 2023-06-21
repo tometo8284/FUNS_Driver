@@ -23,12 +23,12 @@ class Admin::UsersController < ApplicationController
   
   def user_post
     @user = User.find(params[:id])
-    @posts = @user.posts
+    @posts = @user.posts.order("created_at desc")
   end
   
   def user_comment
     @user = User.find(params[:id])
-    @comments = @user.comments
+    @comments = @user.comments.order("created_at desc")
   end
   
   private

@@ -4,8 +4,13 @@
   <%= link_to admin_post_path(post.id) do %>
     <%= post.title %>
   <% end %>
+  <br />
   <%= image_tag post.get_image, size: "200x200" %>
     <table>
+      <tr>
+        <th>投稿日</th>
+        <td><%= post.created_at.strftime('%Y/%m/%d') %></td>
+      </tr>
       <tr>
         <th>場所</th>
         <td><%= post.area_i18n %></td>

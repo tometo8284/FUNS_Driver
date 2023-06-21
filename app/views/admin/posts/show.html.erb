@@ -10,6 +10,10 @@
     </td>
   </tr>
   <tr>
+    <th>投稿日</th>
+    <td><%= @post.created_at.strftime('%Y/%m/%d') %></td>
+  </tr>
+  <tr>
     <th>ドライブメモ</th>
     <td><%= @post.describe %></td>
   </tr>
@@ -29,6 +33,61 @@
   </tr>
 </table>
 
+<div id='map'></div>
+  <style>
+    #map {
+      height: 600px;
+      width: 1000px;
+    }
+  </style>
+  <script>
+    let map
+    let geocoder
+    let marker = [];
+    let infoWindow = [];
+    var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
+    var imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
+    var describeData = <%== @post.maps.map {|o| { marker_describe: o['marker_describe'] }}.to_json %>
+    function initMap() {
+      //初期表示位置
+      geocoder = new google.maps.Geocoder()
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: markerData[0],
+        zoom: 13
+      });
+      for(var i = 0; i < markerData.length; i++) {
+        let id = markerData[i]['id']
+      
+
+      // 各地点の緯度経度を算出
+      markerLatLng = new google.maps.LatLng({
+        lat: markerData[i]['lat'],
+        lng: markerData[i]['lng']
+      });
+
+      // 各地点のマーカーを作成
+      marker[i] = new google.maps.Marker({
+        position: markerLatLng,
+        map: map
+      });
+      
+      infoWindow[i] = new google.maps.InfoWindow({
+        // 吹き出しの内容
+        content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
+      }); 
+         markerEvent(i);
+      }
+      
+       function markerEvent(i) {
+         marker[i].addListener('click', function () {
+         infoWindow[i].open(map, marker[i]);
+       });
+      }
+    }
+    
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+
  <%= link_to "投稿削除", admin_post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
 
 <div>
@@ -38,6 +97,6 @@
     <p><%= image_tag comment.user.get_profile_image, size: "50x50" %></p>
     <%= comment.user.nick_name %>
     <%= comment.created_at.strftime('%Y/%m/%d') %><%= comment.post_comment %>
-    <%= link_to "削除", admin_post_comment_path(comment.post, comment.id), method: :delete %>
+    <%= link_to "削除", admin_post_comment_path(comment.post, comment.id), method: :delete, data: { confirm: "本当に削除しますか？" } %>
   <% end %>
 </div>

@@ -50,6 +50,6 @@ class Public::PostsController < ApplicationController
   private
   
   def post_params
-    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :marker_describe, marker_image: []])
+    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :line_lat, :line_lng, :marker_describe, marker_image: []])
   end
 end

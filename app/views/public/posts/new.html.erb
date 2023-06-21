@@ -34,6 +34,12 @@
     <%= kf.file_field :marker_image, accept: "image/*", multiple: true %>
     <br />
     <% end %>
+    <%= f.fields_for :maps do |lf| %>
+    <label>line</label>
+      <%= lf.text_field :line_lat %>
+      <%= lf.text_field :line_lng %>
+    <br />
+    <% end %>
     <label>乗り物区分</label>
       <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] } %>
     <br />
@@ -54,8 +60,8 @@
 
   <style>
     #map {
-      height: 600px;
-      width: 600px;
+      height: 1000px;
+      width: 1000px;
     }
   </style>
 
@@ -146,8 +152,7 @@
           }
           
             //追加したマーカーの削除
-           
-            marker.addListener('rightclick', function(){ 
+          marker.addListener('rightclick', function(){ 
             for(let i = 1; i < 5; i++){
               if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
                   marker.setMap(null); 
@@ -155,7 +160,7 @@
                   document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
               }
             }
-            });
+          });
         });
           
         //ここでメインマーカーは複製されない様にする処理を走らせる
@@ -169,6 +174,61 @@
             document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
             document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
           });
+        
+        
+        // 以下ライン作成処理
+          map.addListener('click', function(e){
+            for(let i = 5; i < 10; i++){
+            if (document.getElementById(`post_maps_attributes_${i}_line_lat`).value == 0 )  {
+            var marker = new google.maps.Marker({
+              position: e.latLng,
+              map: map,
+              animation: google.maps.Animation.DROP,
+              icon: {
+                url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
+                scaledSize: new google.maps.Size(10, 10)
+              }
+            });
+            
+              document.getElementById(`post_maps_attributes_${i}_line_lat`).value = e.latLng.lat();
+              document.getElementById(`post_maps_attributes_${i}_line_lng`).value = e.latLng.lng(); 
+              debugger
+              
+              
+              var lineCoordinates = [
+                  new google.maps.LatLng(document.getElementById(`post_maps_attributes_${5}_line_lat`).value, document.getElementById(`post_maps_attributes_${5}_line_lng`).value),
+                  new google.maps.LatLng(document.getElementById(`post_maps_attributes_${6}_line_lat`).value, document.getElementById(`post_maps_attributes_${6}_line_lng`).value),
+                  new google.maps.LatLng(document.getElementById(`post_maps_attributes_${7}_line_lat`).value, document.getElementById(`post_maps_attributes_${7}_line_lng`).value),
+                  new google.maps.LatLng(document.getElementById(`post_maps_attributes_${8}_line_lat`).value, document.getElementById(`post_maps_attributes_${8}_line_lng`).value),
+                  new google.maps.LatLng(document.getElementById(`post_maps_attributes_${9}_line_lat`).value, document.getElementById(`post_maps_attributes_${9}_line_lng`).value),
+              ];
+             
+              //lineCoordinates.filter(v=> v.line_lat != 0);
+              
+              i = 10; }
+              
+              else if (document.getElementById(`post_maps_attributes_9_line_lat`).value != 0) {
+                marker.setMap(null); }
+                
+                
+                
+                
+                let linePath = new google.maps.Polyline({
+                  map: map,
+                  path: lineCoordinates,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2
+                }); 
+                linePath.setMap(map);
+                
+               } 
+               });
+            
+             
+          
+        
+        
       } else {
           alert('該当する結果がありませんでした：' + status);
         }

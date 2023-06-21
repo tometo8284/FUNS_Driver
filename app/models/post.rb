@@ -7,14 +7,13 @@ class Post < ApplicationRecord
   accepts_nested_attributes_for :maps, reject_if: :blank_lat_lng
   has_one_attached :image
   
+  
   def blank_lat_lng(attributes)
     empty = !attributes['lat'].present? || !attributes['lng'].present?
     exists = attributes['id'].present?
     attributes.merge!(_destroy: 1) if exists && empty
     !exists && empty
   end
-  
-  
   
   def get_image
     unless image.attached?
