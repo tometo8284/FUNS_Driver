@@ -1,29 +1,52 @@
-<h1><%= @user.name %>さんの編集ページ</h1>
-<%= form_with model: @user, url:user_path(@user.id), methode: :patch do |f| %>
-   <%= f.file_field :profile_image, accept: "image/*" %>
-  <label>氏名</label>
-    <%= f.text_field :name, autofocus: true %>
-  <br />
-  <label>ニックネーム</label>
-    <%= f.text_field :nick_name, autofocus: true %>
-  <br />
-  <label>メールアドレス</label>
-    <%= f.text_field :email, autofocus: true %>
-  <br />
-  <label>自己紹介</label>
-    <%= f.text_area :introduction, autofocus: true %>
-  <br />
-  <label>所在地</label>
-    <%= f.text_field :address, autofocus: true %>
-  <br />
-  <label>年齢</label>
-    <%= f.text_field :age, autofocus: true %>
-  <br />
-  <label>性別</label>
-    <%= f.select :gender, User.genders.keys.map{|k| [t("enums.user.gender.#{k}"), k] } %>
-  
-  <%= f.submit"更新" %>  
-  
-<% end %>
-<%= link_to "戻る", user_path(@user.id) %>
-
+<div class="container mx-auto">
+  <h1 class="mt-3 text-center"><%= @user.name %>さんの編集ページ</h1>
+    <div class="mt-3 ml-4 form-group">
+      <%= form_with model: @user, url:user_path(@user.id), methode: :patch do |f| %>
+      <label class="col-3">プロフィール画像 :</label>
+        <%= f.file_field :profile_image, accept: "image/*" %>
+      </span>
+      </br />
+      <label class="col-3 py-3">氏名 :</label>
+        <%= f.text_field :name, autofocus: true %>
+      <br />
+      <label class="col-3">ニックネーム :</label>
+        <%= f.text_field :nick_name, autofocus: true %>
+      <br />
+      <label class="col-3 py-3">メールアドレス :</label>
+        <%= f.text_field :email, autofocus: true %>
+      <br />
+      <div class="row">
+      <label class="pl-4 col-3">自己紹介 :</label>
+        <P class="col-8"><%= f.text_area :introduction, autofocus: true, class: "form-control" %></p>
+      </div>
+      <br />
+      <label class="col-3">所在地 :</label>
+        <%= f.text_field :address, autofocus: true %>
+      <br />
+      <label class="py-3 col-3">年齢 :</label>
+        <%= f.text_field :age, autofocus: true %>
+      <br />
+      <label class="col-3">性別 :</label>
+        <%= f.select :gender, User.genders.keys.map{|k| [t("enums.user.gender.#{k}"), k] } %>
+      <br />
+      <div class="actions mt-5 text-center">
+        <%= f.submit"更新", class: "btn btn-success col-lg-3 col-sm-3 col-3 mr-5" %>  
+        <%= link_to "戻る", user_path(@user.id), class: "btn btn-primary col-lg-3 col-sm-3 col-3" %>
+      </div>
+      <% end %>
+    </div>
+    <div class="accordion mt-5" id="accordionExample">
+        <div class="card">
+          <div class="card-header" id="heading1">
+            <h2 class="mb-0">
+              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">※退会お手続きについて</button>
+            </h2>
+          </div>
+          <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionExample">
+            <div class="card-body">
+              <strong>※こちらの注意点をご一読下さい。</strong><%= link_to "進む", unsubscribe_path(current_user.id), class: "btn btn-secondary ml-4" %>  
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

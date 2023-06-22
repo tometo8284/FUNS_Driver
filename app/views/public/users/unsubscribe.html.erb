@@ -1,3 +1,17 @@
-<h1>退会お手続き</h1>
-
-<%= link_to "退会する", withdrawl_path(@user.id), method: :patch, data: { confirm: "本当に退会しますか？"} %>
+<div class="container mx-auto">
+  <div class="row">
+    <h2 class="mt-4 mb-4 bg-light">退会お手続き</h2>
+    <div class="col-sm-12 col-lg-12 col-md-12">
+      <div class="bg-light mb-3">
+        ※退会されますと、ご自身の登録されていた情報、投稿内容の閲覧編集はできなくなります。
+      <br />また、登録されていたメールアドレスでの新規登録もできなくなります。
+      </br>再度登録される際は、お手数ですが新しいメールアドレスをご用意ください。
+      </div>
+      <div>以上の点をご理解頂き、退会される際は下記 <u>退会する</u> をクリックしてください。</div>
+       <div class="mt-5 text-center">
+          <%= link_to "退会する", withdrawl_path(@user.id), method: :patch, data: { confirm: "本当に退会しますか？"}, class: "btn btn-danger col-1" %>
+          <%= link_to "戻る", user_path(current_user.id), class: "ml-5 btn btn-primary col-5" %>
+      </div>
+    </div>
+  </div>
+</div>

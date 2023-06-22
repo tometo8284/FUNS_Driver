@@ -1,40 +1,39 @@
-<h1>
-  <%= @user.nick_name %>
-  
-  <% if @user == current_user %>
-    さんのマイページ
-  <% else %>
-    さんの紹介ページ<br />
-    <% if current_user.following?(@user) %>
-      <%= link_to "フォロー外す", user_relationships_path(@user.id), method: :delete %>
+<div class="container mx-auto">
+  <div class="row mx-auto mt-3">
+  <h1 class="col-12 text-center">
+    <%= @user.nick_name %>
+    <% if @user == current_user %>
+      さんのマイページ
     <% else %>
-      <%= link_to "フォローする", user_relationships_path(@user.id), method: :post %>
+      さんの紹介ページ<br />
+  </h1>
+    <p class="col-lg-3 text-center">      
+      <% if current_user.following?(@user) %>
+        <%= link_to "フォローを外す", user_relationships_path(@user.id), method: :delete %>
+      <% else %>
+        <%= link_to "フォローする", user_relationships_path(@user.id), method: :post %>
+      <% end %>
+    </p>
     <% end %>
+  </div>
+  <div class="row mt-3 text-center">
+    <span class="col-lg-3 col-sm-3"><%= link_to "投稿一覧を見る", user_post_path(@user) %></span>
+    <span class="col-lg-3 col-sm-3"><%= link_to "いいね一覧を見る", user_fav_path(@user) %></span>
+    <span class="col-lg-3 col-sm-3"><%= link_to "フォロー一覧", user_followings_path(@user) %></span>
+    <span class="col-lg-3 col-sm-3"><%= link_to "フォロワー一覧", user_followers_path(@user) %></span>
+  </div>
+  <div class="row mt-5 mx-auto">
+    <p class="col-lg-4 col-sm-5 text-center"><%= image_tag @user.get_profile_image, size: "200x200" %></p>
+    <div class="col-lg-8 col-sm-7">
+      <li class="h5">自己紹介 : <%= @user.introduction %></li>
+      <li class="h5">所在地 : <%= @user.address %></li>
+      <li class="h5">年齢 : <%= @user.age %></li>
+      <li class="h5">性別 : <%= @user.gender_i18n %></li>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-5 text-center">
+  <% if @user == current_user %>
+    <%= link_to "編集", edit_user_path(current_user.id), class: "btn btn-secondary" %>
   <% end %>
-</h1>
-<%= link_to "投稿一覧を見る", user_post_path(@user) %>
-<%= link_to "いいね一覧を見る", user_fav_path(@user) %>
-<%= link_to "フォロー一覧", user_followings_path(@user) %>
-<%= link_to "フォロワー一覧", user_followers_path(@user) %>
-<br />
-<%= image_tag @user.get_profile_image, size: "200x200" %>
-<li>
-  自己紹介:
-  <%= @user.introduction %>
-</li>
-<li>
-  所在地:
-  <%= @user.address %>
-</li>
-<li>
-  年齢:
-  <%= @user.age %>
-</li>
-<li>
-  性別:
-  <%= @user.gender_i18n %>
-</li>
-
-<% if @user == current_user %>
-  <%= link_to "編集", edit_user_path(current_user.id) %>
-<% end %>
+  </div>
+</div>

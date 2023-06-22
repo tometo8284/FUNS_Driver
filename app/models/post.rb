@@ -20,7 +20,7 @@ class Post < ApplicationRecord
       file_path = Rails.root.join('app/assets/images/no_fhoto.jpg')
       image.attach(io: File.open(file_path), filename: 'default-image.jpg', content_type: 'image/jpeg')
     end
-    image.variant(resize_to_limit: [200, 200]).processed
+    image.variant(resize_to_limit: [500, 500]).processed
   end
     
   def fav_by?(user)
