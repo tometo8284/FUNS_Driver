@@ -1,6 +1,6 @@
-<div class="pl-5 pt-3">
-<h2>ログイン画面</h2>
-
+<div class="container mt-3">
+<h2 class="text-center">ログイン画面</h2>
+<div class="text-center">
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <div class="field">
     <%= f.label :email %><br />
@@ -25,4 +25,5 @@
 <% end %>
 
 <%= render "public/shared/links" %>
+</div>
 </div>

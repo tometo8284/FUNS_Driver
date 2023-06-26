@@ -1,3 +1,4 @@
+<div class="container">
 <h1><%= @post.title %>の編集</h1>
 <%= form_with model: @post, url: post_path(@post.id), method: :patch do |f| %>
 <label>タイトル</label>
@@ -27,11 +28,14 @@
     <label>経度</label>
       <%= kf.text_field :lng, autofocus: true %> 
     <%= kf.file_field :marker_image, multiple: true %>
-    <br />
     <label>マーカーの説明</label>
       <%= kf.text_area :marker_describe, autofocus: true %>
+    <label>linelatlng</label>
+    <%= kf.text_field :line_lat, autofocus: true %>
+    <%= kf.text_field :line_lng, autofocus: true %>
     <br />
     <% end %>
+  
 <label>乗り物区分</label>
   <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] }, autofocus: true %> 
 <br />
@@ -46,8 +50,8 @@
     <input type="button" value="検索" onclick="codeAddress()">
     <p>赤色マーカーをドラック＆ドロップで位置の調整ができます。<br />
     右クリックで黄色マーカー<p>
+    <input id="remove-line" type="button" value="Remove Line" />
     <div id='map'></div>
-
  <style>
     #map {
       height: 600px;
@@ -59,17 +63,19 @@
     let map
     let geocoder
     let marker = [];
+    let lineMarker = [];
     let infoWindow = [];
-    let aft 
+    let aft
+    let polyline
+    let linePath = [];
     let markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
     let imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
     let describeData = <%== @post.maps.map {|o| { marker_describe: o['marker_describe'] }}.to_json %>
+    let lineData = <%== @post.maps.map {|o| { line_lat: o['line_lat'], line_lng: o['line_lng'] } }.to_json %>
     let delCount = 0
     // markerData.filter(v=> v.lat != 0)
-
     function initMap() {
       //初期表示位置
-       
       geocoder = new google.maps.Geocoder()
       map = new google.maps.Map(document.getElementById('map'), {
         center: markerData[0],
@@ -97,7 +103,6 @@
         });   
       //ここまで
       
-      
       // 以下メインマーカー以外の挙動
       for(let i = 1; i < markerData.length; i++) {
         let id = markerData[i]['id']
@@ -105,7 +110,7 @@
         lat: markerData[i]['lat'],
         lng: markerData[i]['lng']
       });
-　　　//debugger
+      
       marker[i] = new google.maps.Marker({
         position: markerLatLng,
         map: map,
@@ -117,7 +122,6 @@
         content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
       }); 
        
-         
       markerEvent(i);
       function markerEvent(i) {
         marker[i].addListener('click', function () {
@@ -165,18 +169,122 @@
                  marker.setMap(null); 
                  document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
                  document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
-                 } 
-              
+              } 
             }
-                 
             });
         });
+     
+      //既存のline表示処理+削除
+      for (let i = 0; i < lineData.length; i++) {
+        if (lineData[i]['line_lat'] != (0.0 || null)  && lineData[i]['line_lng'] != (0.0 || null)) {
+          lineMarkerLatLng = new google.maps.LatLng({
+            lat: lineData[i]['line_lat'],
+            lng: lineData[i]['line_lng']
+          });
+        
+          lineMarker[i] = new google.maps.Marker({
+            position: lineMarkerLatLng,
+            map: map,
+            icon: {
+              url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
+              scaledSize: new google.maps.Size(8, 8)
+            }
+          });
+        
+          var lineCoordinates = [];
+          
+          for (let j = 0; j < lineData.length; j++){
+            if (lineData[j]['line_lat'] != (0.0 || null)  && lineData[j]['line_lng'] != (0.0 || null)) {
+              lineCoordinates.push(new google.maps.LatLng(lineData[j]['line_lat'], lineData[j]['line_lng']))
+            }
+          }
+          
+        }
+     }
+          //既存のラインの削除処理
+            lineMarker.forEach((marker, index) => {
+              lineMarker[index].addListener('click', function(e){
+                lineCoordinates.splice(index, 1);
+                lineMarker[index].setMap(null);
+                linePath.setMap(null);
+                document.getElementById(`post_maps_attributes_${index}_line_lat`).value = ''
+                document.getElementById(`post_maps_attributes_${index}_line_lng`).value = ''
+                
+                linePath = new google.maps.Polyline({
+                  map: map,
+                  path: lineCoordinates,
+                  position: lineMarkerLatLng,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2
+                });
+              })
+              
+            })
+          
+            linePath = new google.maps.Polyline({
+              map: map,
+              path: lineCoordinates,
+              position: lineMarkerLatLng,
+              strokeColor: "#FF0000",
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+            });
+        
+         
+          
+          
       
-       
-      
+      //ラインを追加+追加したラインの削除処理
+      map.addListener('click', function(e){
+        var lineMarker = new google.maps.Marker({
+          position: e.latLng,
+          map: map,
+          animation: google.maps.Animation.DROP,
+          icon: {
+            url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
+            scaledSize: new google.maps.Size(10, 10)
+          }
+        });
+           
+        if (document.getElementById(`post_maps_attributes_4_line_lat`).value != '') {
+          lineMarker.setMap(null);
+          return;
+        }    
+            
+        for (let i = 0; i < 5; i++){
+          if (document.getElementById(`post_maps_attributes_${i}_line_lat`).value == '' )  {
+            document.getElementById(`post_maps_attributes_${i}_line_lat`).value = e.latLng.lat();
+            document.getElementById(`post_maps_attributes_${i}_line_lng`).value = e.latLng.lng(); 
+            
+            var lineCoordinates = [];
+            for (let j = 0; j < 5; j++){
+              if (document.getElementById(`post_maps_attributes_${j}_line_lat`).value != '' && document.getElementById(`post_maps_attributes_${j}_line_lng`).value != ''){
+                lineCoordinates.push(new google.maps.LatLng(document.getElementById(`post_maps_attributes_${j}_line_lat`).value, document.getElementById(`post_maps_attributes_${j}_line_lng`).value));
+              }
+              //再度クリックでライン削除処理
+              lineMarker.addListener('click', function(){
+                if (document.getElementById(`post_maps_attributes_${i}_line_lat`).value == e.latLng.lat()) {
+                delCount += 1
+                lineMarker.setMap(null); 
+                linePath.setMap(null);
+                document.getElementById(`post_maps_attributes_${i}_line_lat`).value = ''
+                document.getElementById(`post_maps_attributes_${i}_line_lng`).value = ''
+                }
+              });
+            }
+            break; 
+          }
+        }
+        let linePath = new google.maps.Polyline({
+            map: map,
+            path: lineCoordinates,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+      });     
     }
-    
-    
     
     
   </script>
@@ -186,3 +294,4 @@
 <% end %>
 
 <%= link_to "戻る", post_path(@post) %>
+</div>

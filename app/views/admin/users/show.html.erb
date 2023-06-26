@@ -1,12 +1,13 @@
-<h1><%= @user.name %><span>さんの詳細</span></h1>
-  <table>
-    <tr>
-      <th>会員ID</th>
-      <td><%= @user.id %></td>
-    </tr>
+<div class="container mx-auto">
+  <h1 class="col-12 text-center"><%= @user.name %> <span>さんの詳細</span></h1>
+  <table class="table">
     <tr>
       <th></th>
       <td><%= image_tag @user.get_profile_image, size:  "200x200" %></td>
+    </tr>
+    <tr>
+      <th>会員ID</th>
+      <td><%= @user.id %></td>
     </tr>
     <tr>
       <th>ニックネーム</th>
@@ -37,8 +38,8 @@
       <td><%= @user.is_deleted?? '退会' : '有効' %></td>
     </tr>
   </table>
-  <%= link_to "編集する", edit_admin_user_path(@user.id) %> 
-  
-  <%= link_to "投稿一覧を見る", admin_user_post_path(@user) %>
-  
-  <%= link_to "コメント一覧を見る", admin_user_comment_path(@user.id) %>
+  <div class="row text-center">
+    <span class="col-4"><%= link_to "編集する", edit_admin_user_path(@user.id), class: "btn btn-secondary w-50" %></span> 
+    <span class="col-4"><%= link_to "投稿一覧を見る", admin_user_post_path(@user), class: "btn btn-success w-50" %></span>
+    <span class="col-4"><%= link_to "コメント一覧を見る", admin_user_comment_path(@user.id), class: "btn btn-primary w-" %></span>
+  </div>
