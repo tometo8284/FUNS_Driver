@@ -4,12 +4,25 @@ class Post < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :favs, dependent: :destroy
   has_many :maps, dependent: :destroy
+  has_many :map_lines, dependent: :destroy
   accepts_nested_attributes_for :maps, reject_if: :blank_lat_lng
+  accepts_nested_attributes_for :map_lines, reject_if: :blank_linelat_linelng
   has_one_attached :image
+  
+  validates :title, presence: true
+  validates :describe, presence: true, length: { maximum: 200 }
+  validates :location, presence: true
   
   
   def blank_lat_lng(attributes)
     empty = !attributes['lat'].present? || !attributes['lng'].present?
+    exists = attributes['id'].present?
+    attributes.merge!(_destroy: 1) if exists && empty
+    !exists && empty
+  end
+  
+  def blank_linelat_linelng(attributes)
+    empty = !attributes['line_lat'].present? || !attributes['line_lng'].present?
     exists = attributes['id'].present?
     attributes.merge!(_destroy: 1) if exists && empty
     !exists && empty

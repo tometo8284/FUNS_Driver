@@ -1,4 +1,5 @@
 class Admin::CategoriesController < ApplicationController
+  before_action :authenticate_admin!
   def index
     @categories = Category.all
     @category = Category.new
@@ -11,7 +12,6 @@ class Admin::CategoriesController < ApplicationController
        flash[:notice] = "カテゴリが追加されました"
     else 
        @categories = Category.all
-       flash[:notice] = "カテゴリ名を入力してください"
        render 'index'
     end
   end

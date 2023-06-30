@@ -1,7 +1,11 @@
 class Public::PostsController < ApplicationController
+  before_action :authenticate_user!, except: [:show]
+  before_action :is_matching_login_user, only: [:edit, :update, :destroy]
   def new
     @post = Post.new
     5.times { @post.maps.build }
+    20.times { @post.map_lines.build }
+    #(1..Float::INFINITY).lazy.select { @post.maps.build }.take().force
   end
 
   def create
@@ -9,7 +13,7 @@ class Public::PostsController < ApplicationController
     @post.user_id = current_user.id
     if @post.save
        redirect_to @post
-       flash[:notice] = "投稿を追加しました"
+       flash[:notice] = "ドライブデータを追加しました"
     else 
        render :new
     end
@@ -34,7 +38,7 @@ class Public::PostsController < ApplicationController
     @post = Post.find(params[:id])
     if @post.update(post_params)
        redirect_to @post
-       flash[:notice] = "投稿内容が編集されました"
+       flash[:notice] = "ドライブデータが更新されました"
     else
       render :edit
     end
@@ -50,6 +54,14 @@ class Public::PostsController < ApplicationController
   private
   
   def post_params
-    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :line_lat, :line_lng, :marker_describe, marker_image: []])
+    params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :marker_describe, marker_image: []], map_lines_attributes: [:id, :line_lat, :line_lng])
   end
+  
+  def is_matching_login_user
+    @post = Post.find(params[:id])
+      unless @post.user.id == current_user.id
+        redirect_to @post
+      end
+  end
+  
 end

@@ -1,5 +1,6 @@
 class Public::UsersController < ApplicationController
-  before_action :is_matching_login_user, only: [:edit]
+  before_action :authenticate_user!
+  before_action :is_matching_login_user, excpt: [:show, :user_post, :user_fav]
   def show
     @user = User.find(params[:id])
   end
@@ -12,7 +13,7 @@ class Public::UsersController < ApplicationController
     @user = current_user
     if @user.update(user_params)
       redirect_to user_path(current_user.id)
-      flash[:notice] = ":You have updated user successfully."
+      flash[:notice] = "ユーザー情報が更新されました。"
     else
       render :edit
     end

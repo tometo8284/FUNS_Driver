@@ -1,5 +1,6 @@
 <div class="container mx-auto">
 <h1 class="mt-3 mb-3 text-center"><%= @user.nick_name %>さんのいいね一覧</h1>
+<% if @user.favs.exists? %>
 <table class="table">
   <thead>
     <tr>
@@ -29,4 +30,7 @@
     <% end %>
   </tbody>
 </table>
+<% else %>
+  <p class="text-center">いいね をした記録は、まだありません。</p>
+<% end %>
 </div>

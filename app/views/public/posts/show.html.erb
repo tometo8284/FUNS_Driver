@@ -1,5 +1,6 @@
 <div class="container mx-auto mt-2">
   <div class= "text-center">
+    <%= flash[:notice] %><br />
     <h1><%= @post.title %></h1>
     <%= image_tag @post.get_image, size: "200x200" %>
     <br />
@@ -57,7 +58,7 @@
     let markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
     let imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
     let describeData = <%== @post.maps.map {|o| { marker_describe: o['marker_describe'] }}.to_json %>
-    let lineData = <%== @post.maps.map {|o| { line_lat: o['line_lat'], line_lng: o['line_lng'] } }.to_json %>
+    let lineData = <%== @post.map_lines.map {|o| { line_lat: o['line_lat'], line_lng: o['line_lng'] } }.to_json %>
     function initMap() {
       //初期表示位置
       geocoder = new google.maps.Geocoder()
@@ -66,68 +67,80 @@
         zoom: 13
       });
       
-      
-      
-      for(let i = 0; i < markerData.length; i++) {
-      // 各地点の緯度経度を算出 
-      if (markerData[i]['lat'] != 0 && markerData[i]['lng'] != 0) {
+      //markerDataからvalue 0を省く処理
+      let markerDataShow = markerData.filter(v=> v.lat != 0)
+      for(let i = 0; i < markerDataShow.length; i++) {
+        // 各地点の緯度経度を算出 
         markerLatLng = new google.maps.LatLng({
-        lat: markerData[i]['lat'],
-        lng: markerData[i]['lng']
+          lat: markerDataShow[i]['lat'],
+          lng: markerDataShow[i]['lng']
+        });
+       
+        // 各地点のマーカーを作成
+        marker[i] = new google.maps.Marker({
+          position: markerLatLng,
+          map: map
+        });
+        
+        // 吹き出しの内容
+        infoWindow[i] = new google.maps.InfoWindow({
+          content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
+        }); 
+      
+        markerEvent(i);
+        function markerEvent(i) {
+          marker[i].addListener('click', function () {
+            infoWindow[i].open(map, marker[i]);
+          });
+        }
+      }
+      
+      //line作成処理
+      for (let i = 1; i < lineData.length; i++) {
+        let lineDataLast = lineData.filter(v=> v.line_lat != 0)
+        lineMarkerLatLngS = new google.maps.LatLng({
+          lat: lineDataLast.slice(0,1)[0]['line_lat'],
+          lng: lineDataLast.slice(0,1)[0]['line_lng']
+        });
+        
+        lineMarkerLatLngF = new google.maps.LatLng({
+          lat: lineDataLast.slice(-1)[0]['line_lat'],
+          lng: lineDataLast.slice(-1)[0]['line_lng']
+        });
+        
+        
+        lineMarkerS = new google.maps.Marker({
+          position: lineMarkerLatLngS,
+          map: map,
+          icon: 'https://maps.google.com/mapfiles/kml/paddle/S.png'
+        });
+        
+        lineMarkerF = new google.maps.Marker({
+          position: lineMarkerLatLngF,
+          map: map,
+          icon: {
+            url: 'https://maps.google.com/mapfiles/kml/pal2/icon13.png',
+            scaledSize: new google.maps.Size(50, 50)
+          }
+        });
+      
+        var lineCoordinates = [];
+        for (let j = 0; j < lineData.length; j++){
+          if (lineData[j]['line_lat'] != 0 && lineData[j]['line_lng'] != 0 ) {
+            lineCoordinates.push(new google.maps.LatLng(lineData[j]['line_lat'], lineData[j]['line_lng']))
+          }
+        }
+        
+        let linePath = new google.maps.Polyline({
+          map: map,
+          path: lineCoordinates,
+          strokeColor: "#FF0000",
+          strokeOpacity: 1.0,
+          strokeWeight: 2
         });
       }
-      // 各地点のマーカーを作成
-      marker[i] = new google.maps.Marker({
-        position: markerLatLng,
-        map: map
-      });
-      
-      infoWindow[i] = new google.maps.InfoWindow({
-        // 吹き出しの内容
-        content: '<img src="' + imageData[i]['get_marker_image'] + '"><div class="sample">' + describeData[i]['marker_describe'] + '</div>'
-      }); 
-         markerEvent(i);
-      }
-      
-       function markerEvent(i) {
-         marker[i].addListener('click', function () {
-         infoWindow[i].open(map, marker[i]);
-       });
-      }
-    
-    //line作成処理
-    for (let i = 0; i < lineData.length; i++) {
-      lineMarkerLatLng = new google.maps.LatLng({
-        lat: lineData[i]['line_lat'],
-        lng: lineData[i]['line_lng']
-      });
-      
-      lineMarker[i] = new google.maps.Marker({
-        position: lineMarkerLatLng,
-        map: map,
-        icon: {
-          url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
-          scaledSize: new google.maps.Size(8, 8)
-        }
-      });
-      
-      var lineCoordinates = [];
-      for (let j = 0; j < lineData.length; j++){
-        if (lineData[j]['line_lat'] != null && lineData[j]['line_lng'] != null ) {
-          lineCoordinates.push(new google.maps.LatLng(lineData[j]['line_lat'], lineData[j]['line_lng']))
-        }
-      }
-      
-      let linePath = new google.maps.Polyline({
-        map: map,
-        path: lineCoordinates,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
     }
-  }
-    
+  
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
 

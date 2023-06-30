@@ -1,4 +1,5 @@
 class Admin::HomesController < ApplicationController
+  before_action :authenticate_admin!
   def top
     @q = Post.ransack(params[:q])
     @posts = @q.result(distinct: true).includes(:user).order("created_at desc")
