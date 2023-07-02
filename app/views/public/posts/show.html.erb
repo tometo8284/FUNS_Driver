@@ -8,11 +8,11 @@
       <strong><%= @post.is_deleted?? '非公開' : '公開' %></strong>
     <% end %>
   </div>
-  <table class="table">
+  <table class="table bg-light rounded">
     <tr>
       <th>投稿者</th>
       <td>
-        <%= link_to user_path(@user.id) do %>
+        <%= link_to user_path(@user) do %>
           <%= @post.user.nick_name %>
         <% end %>
       </td>
@@ -144,58 +144,60 @@
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
 
-<% if @user == current_user %>
-<div class="mt-3 text-center">
-  <%= link_to "編集", edit_post_path(@post.id), class: 'btn btn-secondary col-3' %>
-  <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" }, class: 'btn btn-danger ml-5 col-1' %>
-</div>
-<% end %>
-
-<div class="text-right">
-  <% if user_signed_in? %>
-    <% if @post.fav_by?(current_user) %>
-      <p class="">
-        <%= link_to post_favs_path(@post), method: :delete do %>
-          ♥<%= @post.favs.count %> いいね
-        <% end %>
-      </p>
+  <% if @user == current_user %>
+  <div class="mt-3 text-center">
+    <%= link_to "編集", edit_post_path(@post.id), class: 'btn btn-secondary col-3' %>
+    <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" }, class: 'btn btn-danger ml-5 col-1' %>
+  </div>
+  <% end %>
+  
+  <div class="text-right">
+    <% if user_signed_in? %>
+      <% if @post.fav_by?(current_user) %>
+        <p class="">
+          <%= link_to post_favs_path(@post), method: :delete do %>
+            <i class="fas fa-heart"></i> <%= @post.favs.count %> いいね
+          <% end %>
+        </p>
+      <% else %>
+        <p>
+          <%= link_to post_favs_path(@post), method: :post do %>
+            <i class="far fa-heart"></i> <%= @post.favs.count %> いいね
+          <% end %>
+        </p>
+      <% end %>
     <% else %>
-      <p>
-        <%= link_to post_favs_path(@post), method: :post do %>
-          ♡<%= @post.favs.count %> いいね
+      <i class="fas fa-heart"></i> <%= @post.favs.count %> いいね
+    <% end %>
+    <p>コメント件数 : <%= @post.comments.count %></p>
+  </div>
+  <div class="text-center"> 
+    <% @post.comments.each do |comment| %>
+    <div class="row bg-light py-3 m-2 rounded-pill">
+      <div class="col-2">
+      <%= link_to user_path(comment.user) do %>
+        <%= image_tag comment.user.get_profile_image, size: "60x60" %><br />
+        <%= comment.user.nick_name %>
+      <% end %>
+      </div>
+      <div class="text-left col-10">
+        <p>: <strong><%= comment.post_comment %></strong></p>
+        <span><%= comment.created_at.strftime('%Y/%m/%d') %></span>
+        <% if comment.user == current_user %>
+          <%= link_to "削除", post_comment_path(comment.post, comment.id), method: :delete %>
         <% end %>
-      </p>
+      </div>
+    </div>
     <% end %>
-  <% else %>
-    ♥<%= @post.favs.count %> いいね
-  <% end %>
-  <p>コメント件数 : <%= @post.comments.count %></p>
+      
+    <% if user_signed_in? %>
+      <%= form_with model: [@post, @comment] do |f| %>
+        <div class="row mt-3 mx-auto">
+          <div class="pl-3 col-6"><%= f.text_area :post_comment, placeholder: "コメントをここに", class: "form-control" %></div>
+          <div class="col-1 my-auto"><%= f.submit "送信する" , class: "btn btn-success" %></div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 </div>
-<div class="text-center">
-<% @post.comments.each do |comment| %>
-  <p><%= image_tag comment.user.get_profile_image, size: "50x50" %></p>
-    <%= link_to user_path(@user) do %>
-      <%= comment.user.nick_name %>
-    <% end %>
-    <%= comment.created_at.strftime('%Y/%m/%d') %><%= comment.post_comment %>
-    <% if comment.user == current_user %>
-      <%= link_to "削除", post_comment_path(comment.post, comment.id), method: :delete %>
-    <% end %>
-  <% end %>
-
-
-<% if user_signed_in? %>
-
-  <%= form_with model: [@post, @comment] do |f| %>
-    <%= f.text_area :post_comment, placeholder: "コメントをここに" %>
-    <%= f.submit "送信する" %>
-  <% end %>
-</div>
-<% end %>
-
-<script>
-  //var markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
-  //console.log(markerData)
-  //var imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
-</script>
 

@@ -2,55 +2,59 @@
   <div class="mx-auto text-center">
     <p class="notice"><%= notice %></p>
     <h1>投稿一覧</h1>
-  <div class="row mx-auto">
-    <h3 class="col-lg-6">人気のカテゴリ</h3>
-    <% @category_ranks.each.with_index(1) do |category, i| %>
-      <table class="table col-lg-4">
-        <tr>
-          <th><%= i %>位</th>
-          <td><%= category.name %></td>
-        </tr>
-     </table>
-    <% end %>
-  </div> 
   <div class="container">
-    <div class="row mt-3">
-      <h3 class="col-lg-2">絞り込み</h3>
-      <div class="col-lg-10">
+    <div class="row mx-auto">
+      <h3 class="col-lg-4">人気のカテゴリ :</h3>
+      <div class="col-lg-7">
+        <% @category_ranks.each.with_index(1) do |category, i| %>
+          <table class="table">
+            <tr>
+              <th><%= i %>位</th>
+              <td><%= category.name %></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div> 
+    <div class="row mt-3 bg-light rounded">
+      <h3 class="pt-4 col-lg-2">絞り込み :</h3>
+      <div class="col-lg-8">
         <%= search_form_for @q, url: root_path do |f| %>
-        <span class="col-lg-3">
-        <%= f.label :category_id_eq, 'カテゴリー' %>
-        <%= f.collection_select :category_id_eq, Category.where.not(id: 0), :id, :name, include_blank: '指定なし' %>
-      </span>
-      <span class="col-lg-3">
-        <%= f.label :area_eq, 'エリア' %>
-        <%= f.select :area_eq, Post.areas_i18n.invert.map{|k, v| [k, Post.areas[v]] }, include_blank: '指定なし' %>
-      </span>
-      <span class="col-lg-3">
-        <%= f.label :prefecture_eq, '都道府県' %>
-        <%= f.select :prefecture_eq, Post.prefectures_i18n.invert.map{|k, v| [k, Post.prefectures[v]] }, include_blank: '指定なし' %>
-      </span>
-      <span class="col-lg-3">
-        <%= f.label :vehicle_eq, '乗り物' %>
-        <%= f.select :vehicle_eq, Post.vehicles_i18n.invert.map{|k, v| [k, Post.vehicles[v]] }, include_blank: '指定なし' %>
-      </span>
-      <div class="row mt-2">
-        <span class="col-lg-7 col-md-10">
-          <%= f.label :location_cont, 'ピンポイントエリア検索' %>
-          <%= f.search_field :location_cont %>
-        </span>
-        <span class="col-lg-5 col-md-2">
-          <%= f.submit "絞り込む", class:"btn btn-secondary" %>
-        </span>
+        <div class="pt-2 row">
+          <span class="col-lg-4 col-12">
+            <%= f.label :category_id_eq, 'カテゴリー' %>
+            <%= f.collection_select :category_id_eq, Category.where.not(id: 0), :id, :name, include_blank: '指定なし' %>
+          </span>
+          <span class="col-lg-4 col-12">
+            <%= f.label :area_eq, 'エリア' %>
+            <%= f.select :area_eq, Post.areas_i18n.invert.map{|k, v| [k, Post.areas[v]] }, include_blank: '指定なし' %>
+          </span>
+          <span class="col-lg-4 col-12">
+            <%= f.label :prefecture_eq, '都道府県' %>
+            <%= f.select :prefecture_eq, Post.prefectures_i18n.invert.map{|k, v| [k, Post.prefectures[v]] }, include_blank: '指定なし' %>
+          </span>
+        </div>
+        <div class="row pt-2"> 
+          <span class="col-lg-6 col-12">
+            <%= f.label :vehicle_eq, '乗り物' %>
+            <%= f.select :vehicle_eq, Post.vehicles_i18n.invert.map{|k, v| [k, Post.vehicles[v]] }, include_blank: '指定なし' %>
+          </span>
+          <span class="col-lg-6 col-md-10">
+            <%= f.label :location_cont, 'エリア検索' %>
+            <%= f.search_field :location_cont %>
+          </span>
+        </div>
       </div>
-      <div class="row mt-2">
-        <span class="col-lg-4"><%= sort_link(@q, :created_at, '新着順') %></span>
-        <span class="col-lg-4"><%= sort_link(@q, :favs_count, 'いいね数順') %></span>
-        <span class="col-lg-4"><%= sort_link(@q, :comments_count, 'コメント数順') %></span>
-      </div>
-      </div>
+      <div class="pt-4 col-lg-2 col-md-2 bg-light">
+        <%= f.submit "絞り込む", class:"btn btn-success" %>
+      </div> 
     </div>
-      <% end %>
+    <div class="row mt-3">
+      <span class="col-lg-4"><%= sort_link(@q, :created_at, '新着順') %></span>
+      <span class="col-lg-4"><%= sort_link(@q, :favs_count, 'いいね数順') %></span>
+      <span class="col-lg-4"><%= sort_link(@q, :comments_count, 'コメント数順') %></span>
+    </div>
+    <% end %>
   </div>
 <div class="card-list-container py-3 col-sm-8 mx-auto">
 <% @posts.each do |post| %>
@@ -72,6 +76,7 @@
         <h5>都道府県 : <u><%= post.prefecture_i18n %></u></h5>
         <h5>場所詳細 : <u><%= post.location %></u></h5>
         <h5>カテゴリ : <u><%= post.category.name %></u></h5>
+        <h5>乗り物 : <u><%= post.vehicle_i18n %></u></h5>
         <p class="card-fav">いいね <i class="far fa-thumbs-up"></i> : <%= post.favs.count %></p>
         <p class="card-comment">コメント <i class="far fa-comments"></i> : <%= post.comments.count %></p>
         <p class="card-created_at">投稿日: <%= post.created_at.strftime('%Y/%m/%d') %></p>

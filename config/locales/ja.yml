@@ -109,10 +109,10 @@ ja:
         okinawa: "沖縄県"
       vehicle:
         car: "車"
-        offroad_car: "車（オフロードタイプ）"
+        offroad_car: "車（オフロード）"
         trak: "トラック"
         bike: "バイク"
-        offroad_bike: "バイク（オフロードタイプ）"
+        offroad_bike: "バイク（オフロード）"
         bicycle: "自転車"
         buggy: "バギー"
         

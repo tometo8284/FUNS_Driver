@@ -1,41 +1,43 @@
-<div class="pt-3 pl-5">
-<h2>新規登録画面</h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "public/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+<div class="container text-center col-lg-7 mt-2">
+  <h2>新規登録画面</h2>
   
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </div>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= render "public/shared/error_messages", resource: resource %>
   
-  <div class="field">
-    <%= f.label :nick_name %><br />
-    <%= f.text_field :nick_name %>
-  </div>
+    <div class="field row mt-3">
+      <%= f.label :emaill, class: "col-4" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "col-7" %>
+    </div>
+    
+    <div class="field row mt-3">
+      <%= f.label :name, class: "col-4"  %>
+      <%= f.text_field :name, class: "col-7" %>
+    </div>
+    
+    <div class="field row mt-3">
+      <%= f.label :nick_name, class: "col-4" %>
+      <%= f.text_field :nick_name, class: "col-7" %>
+    </div>
+    
+    <div class="field row mt-3">
+      <div class="col-4">
+        <%= f.label :password %>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> 文字以上)</em>
+        <% end %>
+      </div>
+      <%= f.password_field :password, autocomplete: "new-password", class: "col-7" %>
+    </div>
   
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
+    <div class="field row mt-2">
+      <%= f.label :password_confirmation, class: "col-4" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "col-7" %>
+    </div>
+  
+    <div class="actions mt-3 mb-3">
+      <button type="submit" class="btn btn-success w-50">Sign up</button>
+    </div>
+  <% end %>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions pt-2">
-    <button type="submit" class="btn btn-success">Sign up</button>
-  </div>
-<% end %>
-
-<%= render "public/shared/links" %>
+  <%= render "public/shared/links", class: "text-light link-dark" %>
 </div>

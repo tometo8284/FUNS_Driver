@@ -1,6 +1,7 @@
 class Public::UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :is_matching_login_user, excpt: [:show, :user_post, :user_fav]
+  before_action :is_matching_login_user, except: [:show, :user_post, :user_fav]
+  
   def show
     @user = User.find(params[:id])
   end

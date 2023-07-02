@@ -300,12 +300,15 @@
               //再度クリックでライン削除処理
               lineMarker.addListener('click', function(){
                 if (document.getElementById(`post_map_lines_attributes_${i}_line_lat`).value == e.latLng.lat()) {
+                  delCount += 1
                   lineMarker.setMap(null); 
                   linePath.setMap(null);
                   document.getElementById(`post_map_lines_attributes_${i}_line_lat`).value = 0
                   document.getElementById(`post_map_lines_attributes_${i}_line_lng`).value = 0
                 }
               });
+              
+              //lineを全て削除する処理
               dellLine.addEventListener("click", function() {
                 linePath.setMap(null);
                 lineMarker.setMap(null);
