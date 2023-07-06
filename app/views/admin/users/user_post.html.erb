@@ -5,7 +5,7 @@
     <div class="row mb-4">
       <div class="row mx-auto col-11 col-lg-4 bg-success rounded">
         <strong class="text-light my-auto col-12"><u><%= post.is_deleted?? '非公開' : '公開' %></u></strong>
-        <div class="mx-auto text-center mb-2">
+        <div class="mx-auto text-center mb-2 ">
           <%= link_to admin_post_path(post.id) do %>
             <h3 class="text-light"><%= post.title %></h3><br />
             <%= image_tag post.get_image, size: "200x200" %>
@@ -38,6 +38,7 @@
       </table>
     </div>
     <% end %>
+    <div class="container col-9"><%= paginate @posts, theme: 'twitter-bootstrap-4' %></div>
   <% else %>
     <p class="text-center">ドライブデータは、まだありません。</p>
   <% end %>

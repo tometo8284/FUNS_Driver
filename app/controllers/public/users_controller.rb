@@ -34,7 +34,7 @@ class Public::UsersController < ApplicationController
   
   def user_post
     @user = User.find(params[:id])
-    @posts = @user.posts.order("created_at desc")
+    @posts = @user.posts.page(params[:page]).order("created_at desc")
   end
   
   def user_fav

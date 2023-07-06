@@ -43,6 +43,13 @@ ja:
       header:
         one: "%{model}にエラーが発生しました"
         other: "%{model}に%{count}個のエラーが発生しました"
+  views:
+    pagination:
+      first: 最初へ
+      last: 最後へ
+      previous: 前へ
+      next: 次へ
+      truncate: ...
   enums:
     user:
       gender:

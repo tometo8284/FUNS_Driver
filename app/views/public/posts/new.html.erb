@@ -170,12 +170,9 @@
         document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
         document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
       });
-        
-      // 既存のラインを削除
-        //if (polyline != undefined){
-        //  removeLine(polyline);
-        //}
       
+      // 以下ライン作成・削除処理  
+      // 既存のラインを削除
       removeLine.addEventListener('click', function() {
         // ボタンをdisableにする
         for (var i = markers.length - 1; i >= 0; i--) {
@@ -186,7 +183,7 @@
         // ボタンをenableにする
       });
       delLine.addEventListener("click", eventDelLine, false);
-      // 以下ライン作成処理
+      
       map.addListener('click', function(e){
         var marker = new google.maps.Marker({
           position: e.latLng,
@@ -255,7 +252,6 @@
             document.getElementById(`post_map_lines_attributes_${i}_line_lng`).value = 0
             return; }
           removeMarker(index);
-          
         }, false);
         lineCoordinates.push(new google.maps.LatLng(document.getElementById(`post_map_lines_attributes_${i}_line_lat`).value, document.getElementById(`post_map_lines_attributes_${i}_line_lng`).value));
       }

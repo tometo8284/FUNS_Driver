@@ -2,6 +2,7 @@ class Map < ApplicationRecord
   belongs_to :post
   has_many_attached :marker_image
   
+  
   def get_marker_image
     unless marker_image.attached?
       file_path = Rails.root.join('app/assets/images/no_fhoto.jpg')
