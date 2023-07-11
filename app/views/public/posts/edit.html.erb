@@ -102,7 +102,6 @@
     let delCount = 0
     // markerData.filter(v=> v.lat != 0)
     function initMap() {
-    
       //初期表示位置
       geocoder = new google.maps.Geocoder()
       map = new google.maps.Map(document.getElementById('map'), {
@@ -252,31 +251,26 @@
         }
       }
      
-      let linePath = new google.maps.Polyline({
+      linePath = new google.maps.Polyline({
         path: lineCoordinates,
         strokeColor: "#FF0000",
         strokeOpacity: 1.0,
         strokeWeight: 2
       });
       
-      //既存のラインの削除処理
+    //既存のラインの削除処理
+      //ボタンによる削除
       lineMarker.forEach((marker, index) => {
         enable.addEventListener('click', function(){
           lineCoordinates.splice(index -1, 1);
-          //lineMarker[index].setMap(null);
           linePath.setMap(null);
           document.getElementById(`post_map_lines_attributes_${index}_line_lat`).value = 0
           document.getElementById(`post_map_lines_attributes_${index}_line_lng`).value = 0
-          
-          linePath = new google.maps.Polyline({
-            map: map,
-            path: lineCoordinates,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 2
-          });
+          createLine();
         })
       })
+      
+      //マーカークリックによる削除
       lineMarker.forEach((marker, index) => {
         lineMarker[index].addListener('click', function(e){
           lineCoordinates.splice(index, 1);
@@ -323,6 +317,8 @@
         createLine();
       });
     }
+    
+    
     
     
      //以下line作成と削除の処理

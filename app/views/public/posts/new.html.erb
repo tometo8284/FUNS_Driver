@@ -9,12 +9,33 @@
     </ul>
   <% end %>
   <div class="mt-3 ml-4 form-group">
-  <%= form_with model: @post, url: posts_path, method: :post do |f| %>
-    <label class="col-3">タイトル :</label>
-      <%= f.text_field :title %>
-    <br />
-    <label class="col-3">TOP画像 :</label>
-      <%= f.file_field :image, accept: "image/*" %>
+    <%= form_with model: @post, url: posts_path, method: :post do |f| %>
+      <label class="col-3">タイトル :</label>
+        <%= f.text_field :title %>
+      <br />
+      <div class="row">
+        <label class="pl-4 col-3">TOP画像 :</label>
+        <div class="col-9">
+          <%= image_tag "/assets/no_fhoto.jpg", size: "200x200", id: :img_prev %>
+          <%= f.file_field :image, id: :image %>
+        </div>
+      </div>
+      <script type="text/javascript">
+        $(function() {
+          function readURL(input) {
+            if (input.files && input.files[0]) {
+              var reader = new FileReader();
+                reader.onload = function (e) {
+                  $('#img_prev').attr('src', e.target.result);
+                }
+              reader.readAsDataURL(input.files[0]);
+            }
+          }
+          $("#image").change(function(){
+            readURL(this);
+          });
+        });
+      </script>
     <br />
     <div class="row">
       <label class="pl-4 col-3">注目ポイント :</label>
@@ -56,6 +77,7 @@
         <p class="col-7"><%= kf.text_area :marker_describe, class: "form-control" %></p>
       </div>
         <label class="col-3"><%= i %>マーカー地点の画像</label>
+        <%= image_tag "/assets/no_fhoto.jpg", size: "50x50", id: "img_marker_prev_#{i}" %>
         <%= kf.file_field :marker_image, accept: "image/*", multiple: true %>
       <br />
     </div>
@@ -66,15 +88,20 @@
       <P ><%= lf.text_field :line_lng, value: 0 %></P>
     <% end %>
   </div>
+  
   <h2>Map</h2>
-    <input id="address" type="textbox" placeholder="住所を入力してください">
-    <input type="button" value="検索" onclick="codeAddress()">
-    <input type="button" value="全てのラインを削除" id="removeLine" />
-    <input type="button" value="ラインを一つ削除" id="delLine" />
-    <p>検索時のマーカーはドラック＆ドロップで位置の調整ができます。<br />
-    右クリックで1~4のマーカーを作成、もう一度右クリックで削除できます。<p>
-    <div id='map'></div>
-
+  <div class="row">
+    <div class="col-4"><input id="address" type="textbox" placeholder="住所を入力してください"></div>
+    <div class="col-1"><input type="button" value="検索" onclick="codeAddress()"></div>
+  </div>
+    <p>まず初めに検索をしてください。<br />
+      検索時のマーカーはドラック＆ドロップで位置の調整ができます。<br />
+      右クリックで1~4の画像と説明文を入れるマーカーを作成、もう一度右クリックで削除できます。<br />
+      左クリックで走行経路にマーカーを落として線を引けます。</p>
+  <div id='map'></div>
+  <p>下のボタンでラインの削除を行えます。</p>
+  <input type="button" value="全てのラインを削除" id="removeLine" />
+  <input type="button" value="ラインを一つ削除" id="delLine" />
   <style>
     #map {
       height: 700px;
@@ -89,9 +116,11 @@
     function initMap(){
       geocoder = new google.maps.Geocoder()
       map = new google.maps.Map(document.getElementById('map'), {
-        center:  {lat: 35.6803997, lng:139.7690174},  //東京
+        center:  {lat: 35.6803997, lng: 139.7690174},  //東京
         zoom: 15,
       });
+      document.getElementById(`post_maps_attributes_${0}_lat`).value = 35.6803997;
+      document.getElementById(`post_maps_attributes_${0}_lng`).value = 139.7690174; 
     }
 
     let geocoder
@@ -108,112 +137,107 @@
     function codeAddress(){
     let inputAddress = document.getElementById('address').value;
     
-
-    geocoder.geocode( { 'address': inputAddress}, function(results, status) {
-      if (status == 'OK') {
-        // trueになればマーカーを複製できないようにする
-        if (aft == true){
-          mainmarker.setMap(null);
-        }
-        //検索時にマーカーを作成する
-        map.setCenter(results[0].geometry.location);
-        mainmarker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location,
-          draggable: true	// ドラッグ可能にする
-        });
-          
-         //右クリックでさらにマーカーを作成
-        map.addListener('rightclick', function(e){
-          for(let i = 1; i < 5; i++) {
-            if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
-              var marker = new google.maps.Marker({
-                position: e.latLng,
-                map: map,
-                icon: 'https://maps.google.com/mapfiles/kml/paddle/'+ i.toString() +'.png',
-                animation: google.maps.Animation.DROP
-              });
-          
-            if (document.getElementById(`post_maps_attributes_${i}_lat`).value != 0) {
-              marker.setMap(null); 
-              return; 
-            }
-          
-          // 5回処理を繰り返す
-            document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
-            document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng(); 
-            break; 
+      geocoder.geocode( { 'address': inputAddress}, function(results, status) {
+        if (status == 'OK') {
+          // trueになればマーカーを複製できないようにする
+          if (aft == true){
+            mainmarker.setMap(null);
           }
-        }
+          //検索時にマーカーを作成する
+          map.setCenter(results[0].geometry.location);
+          mainmarker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+            draggable: true	// ドラッグ可能にする
+          });
             
-        //追加したマーカーの削除
-        marker.addListener('rightclick', function(){ 
-          for(let i = 1; i < 5; i++){
-            if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
-              delCount += 1
-              marker.setMap(null); 
-              document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
-              document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+           //右クリックでさらにマーカーを作成
+          map.addListener('rightclick', function(e){
+            for(let i = 1; i < 5; i++) {
+              if (document.getElementById(`post_maps_attributes_${i}_lat`).value == 0 )  {
+                var marker = new google.maps.Marker({
+                  position: e.latLng,
+                  map: map,
+                  icon: 'https://maps.google.com/mapfiles/kml/paddle/'+ i.toString() +'.png',
+                  animation: google.maps.Animation.DROP
+                });
+            
+              if (document.getElementById(`post_maps_attributes_${i}_lat`).value != 0) {
+                marker.setMap(null); 
+                return; 
+              }
+            
+            // 5回処理を繰り返す
+              document.getElementById(`post_maps_attributes_${i}_lat`).value = e.latLng.lat();
+              document.getElementById(`post_maps_attributes_${i}_lng`).value = e.latLng.lng(); 
+              break; 
             }
           }
+              
+          //追加したマーカーの削除
+          marker.addListener('rightclick', function(){ 
+            for(let i = 1; i < 5; i++){
+              if (document.getElementById(`post_maps_attributes_${i}_lat`).value == e.latLng.lat()) {
+                delCount += 1
+                marker.setMap(null); 
+                document.getElementById(`post_maps_attributes_${i}_lat`).value = 0
+                document.getElementById(`post_maps_attributes_${i}_lng`).value = 0 
+              }
+            }
+          });
         });
-      });
-          
-      //ここでメインマーカーは複製されない様にする処理を走らせる
-      aft = true
-      //検索した時に緯度経度を入力する
-      document.getElementById('post_maps_attributes_0_lat').value = results[0].geometry.location.lat();
-      document.getElementById('post_maps_attributes_0_lng').value = results[0].geometry.location.lng(); 
-      
-      // メインマーカーのドロップ（ドラッグ終了）時のイベント
-      google.maps.event.addListener( mainmarker, 'dragend', function(ev){
-        document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
-        document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
-      });
-      
-      // 以下ライン作成・削除処理  
-      // 既存のラインを削除
-      removeLine.addEventListener('click', function() {
-        // ボタンをdisableにする
-        for (var i = markers.length - 1; i >= 0; i--) {
-          removeMarker(i);
-          document.getElementById(`post_map_lines_attributes_${i}_line_lat`).value = 0
-          document.getElementById(`post_map_lines_attributes_${i}_line_lng`).value = 0
-        }
-        // ボタンをenableにする
-      });
-      delLine.addEventListener("click", eventDelLine, false);
-      
-      map.addListener('click', function(e){
-        var marker = new google.maps.Marker({
-          position: e.latLng,
-          map: map,
-          animation: google.maps.Animation.DROP,
-          icon: {
-            url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
-            scaledSize: new google.maps.Size(10, 10)
-          }
-        });
-        markers.push(marker);
-        createLine();
-
-
-      });
+            
+        //ここでメインマーカーは複製されない様にする処理を走らせる
+        aft = true
+        //検索した時に緯度経度を入力する
+        document.getElementById('post_maps_attributes_0_lat').value = results[0].geometry.location.lat();
+        document.getElementById('post_maps_attributes_0_lng').value = results[0].geometry.location.lng(); 
         
-      } else {
-          alert('該当する結果がありませんでした：' + status);
-        }
-    }); 
+        // メインマーカーのドロップ（ドラッグ終了）時のイベント
+        google.maps.event.addListener( mainmarker, 'dragend', function(ev){
+          document.getElementById('post_maps_attributes_0_lat').value = ev.latLng.lat();
+          document.getElementById('post_maps_attributes_0_lng').value = ev.latLng.lng();
+        });
+        
+        // 以下ライン作成・削除処理  
+        // 既存のラインを削除
+        removeLine.addEventListener('click', function() {
+          // ボタンをdisableにする
+          for (var i = markers.length - 1; i >= 0; i--) {
+            removeMarker(i);
+            document.getElementById(`post_map_lines_attributes_${i}_line_lat`).value = 0
+            document.getElementById(`post_map_lines_attributes_${i}_line_lng`).value = 0
+          }
+          // ボタンをenableにする
+        });
+        delLine.addEventListener("click", eventDelLine, false);
+        
+        //line用のマーカーを作成
+        map.addListener('click', function(e){
+          var marker = new google.maps.Marker({
+            position: e.latLng,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            icon: {
+              url: 'data:image/svg+xml;utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="black"/></svg>'),
+              scaledSize: new google.maps.Size(10, 10)
+            }
+          });
+          markers.push(marker);
+          createLine();
+        });
+          
+        } else 
+          { alert('該当する結果がありませんでした：' + status); }
+      }); 
     }
     
     //以下line作成と削除の処理
-    function eventDelLine()
-    {
+    function eventDelLine() {
       removeMarker(markers.length - 1);
     }
     
-    function removeMarker( index )
-    {
+    function removeMarker( index ) {
       markers[index].setMap(null);
       markers.splice(index, 1); // markerの要素を削除
       document.getElementById(`post_map_lines_attributes_${index}_line_lat`).value = 0
@@ -221,8 +245,7 @@
       createLine();
     }
 
-    function findMarker(latLngString)
-    {
+    function findMarker(latLngString) {
       for (var i = 0;i < markers.length;i++) {
         if (latLngString == markers[i].position.toString()) {
           return i;
@@ -231,8 +254,7 @@
       return -1;
     }
 
-    function createLine()
-    {
+    function createLine() {
       // 線をすべて削除
       if (linePath != null) {
         linePath.setMap(null);
@@ -265,12 +287,11 @@
           strokeWeight: 2
         });
       }
-
     }
     
-    
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_MAP_API'] %>&callback=initMap" async defer></script>
+  
   <div class="row mt-4">
     <div class="col-3">
     <%= f.radio_button :is_deleted, :false %>
@@ -284,3 +305,23 @@
   </div>
 <% end %>
 </div>
+
+<script type="text/javascript">
+  $ (function() {
+    for (let i = 0; i < 5; i++){
+      var file = document.querySelector('input[type=file]').files[0];
+      function readURL(input, file) { 
+        if (input.files && input.files[0]) {
+          let reader = new FileReader();
+          reader.onload = function (e) {
+            $(`#img_marker_prev_${i}`).attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+      $(`#post_maps_attributes_${i}_marker_image`).change(function(){
+        readURL(this);
+      });
+    }
+  });
+</script>

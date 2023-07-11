@@ -17,12 +17,12 @@
             <%= image_tag fav.post.get_image, size: "100x100" %>
             <br />
             <%= link_to post_path(fav.post) do %>
-              <%= fav.post.title %>
+              <i class="fa-solid fa-link"></i><span class="text-dark"><%= fav.post.title %></span>
             <% end %>
           </td>
           <td>
             <%= link_to user_path(fav.post.user) do %>
-              <%= fav.post.user.nick_name %>
+              <i class="fa-solid fa-link"></i> <span class="text-dark"><%= fav.post.user.nick_name %></span>
             <% end %>
           </td>
           <td><%= fav.post.category.name %></td>
