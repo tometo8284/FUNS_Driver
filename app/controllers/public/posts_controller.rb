@@ -5,7 +5,6 @@ class Public::PostsController < ApplicationController
     @post = Post.new
     5.times { @post.maps.build }
     20.times { @post.map_lines.build }
-    #(1..Float::INFINITY).lazy.select { @post.maps.build }.take().force
   end
 
   def create
@@ -23,6 +22,7 @@ class Public::PostsController < ApplicationController
     @post = Post.find(params[:id]) 
     @user = @post.user 
     @maps = @post.maps
+    # 非公開の投稿は投稿者しか見られないようにする処理
     if @post.is_deleted == false || @user == current_user
     else
       redirect_to root_path

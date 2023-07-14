@@ -13,32 +13,36 @@
       </ul>
     <% end %>
     <%= form_with model: @user, url: admin_user_path(@user.id), method: :patch do |f| %>
-      <label class="col-4">プロフィール画像 :</label>
-        <%= f.file_field :profile_image, accept: "image/*" %>
-      <br />
-      <label class="col-3 py-3">氏名</label>
+      <div class="row">
+        <label class="pl-4 col-4">プロフィール画像 :</label>
+        <div class="col-8">
+          <%= image_tag @user.get_profile_image, size: "200x200", id: :img_prev %>
+          <%= f.file_field :profile_image, id: :profile_image, class: "mt-1" %>
+        </div>
+      </div>
+      <label class="col-4 py-3">氏名</label>
         <%= f.text_field :name, autofocus: true %>
       <br />  
-      <label class="col-3">ニックネーム</label>
+      <label class="col-4">ニックネーム</label>
         <%= f.text_field :nick_name, autofocus: true %>
       <br />
-      <label class="col-3 py-3">メールアドレス</label>
+      <label class="col-4 py-3">メールアドレス</label>
         <%= f.text_field :email, autofocus: true %>
       <br />
       <div class="row">
-        <label class="col-3 pl-4">自己紹介</label>
+        <label class="col-4 pl-4">自己紹介</label>
         <P class="col-8"><%= f.text_area :introduction, autofocus: true, class: "form-control" %></p>
       </div>
-      <label class="col-3 pt-1">所在地</label>
+      <label class="col-4 pt-1">所在地</label>
         <%= f.text_field :address, autofocus: true %>
       <br />
-      <label class="col-3 py-3">年齢</label>
+      <label class="col-4 py-3">年齢</label>
         <%= f.text_field :age, autofocus: true %>
       <br />
-      <label class="col-3">性別</label>
+      <label class="col-4">性別</label>
         <%= f.select :gender, User.genders.keys.map{|k| [t("enums.user.gender.#{k}"), k] } %>
       <br />
-      <label class="col-3 py-3">ステータス</label>
+      <label class="col-4 py-3">ステータス</label>
         <%= f.radio_button :is_deleted, :false %>
         <%= f.label :is_deleted, "有効" %> &nbsp;
         <%= f.radio_button :is_deleted, :true %>
@@ -47,6 +51,25 @@
       <div class="actions mt-5 text-center">
         <%= f.submit "変更を保存", class: "btn btn-success col-lg-3 col-sm-3 col-3 mr-5" %>
         <%= link_to "戻る", admin_user_path(@user.id), class: "btn btn-primary col-lg-3 col-sm-3 col-3" %>
+      </div>
     <% end %>
   </div>
 </div>
+
+<!--画像プレビュー表示処理-->
+<script type="text/javascript">
+  $(function() {
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#img_prev').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    $("#profile_image").change(function(){
+      readURL(this);
+    });
+  });
+</script>

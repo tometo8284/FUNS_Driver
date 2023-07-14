@@ -1,48 +1,48 @@
 <div class="container mt-2">
-<h1 class="text-center"><%= @user.nick_name %>さんのドライブデータ一覧</h1>
-<% if @user.posts.exists? %>
-  <% @posts.each do |post| %>
-  <div class="row mb-4">
-    <div class="row mx-auto col-11 col-lg-4 bg-success rounded">
-      <% if @user == current_user %>
-        <strong class="text-light my-auto col-12"><u><%= post.is_deleted?? '非公開' : '公開中' %></u></strong>
-      <% end %>
-    <% if post.is_deleted == false || @user == current_user %>
-      <div class="mx-auto text-center mb-2">
-        <%= link_to post_path(post.id) do %>
-          <h3 class="text-light"><i class="fa-solid fa-link"></i> <%= post.title %></h3>
-        <br />
-          <%= image_tag post.get_image, size: "150x150" %>
+  <h1 class="text-center"><%= @user.nick_name %>さんのドライブデータ一覧</h1>
+  <% if @user.posts.exists? %>
+    <% @posts.each do |post| %>
+    <div class="row mb-4">
+      <div class="row mx-auto col-11 col-lg-4 bg-success rounded">
+        <% if @user == current_user %>
+          <strong class="text-light my-auto col-12"><u><%= post.is_deleted?? '非公開' : '公開中' %></u></strong>
         <% end %>
+      <!-- 投稿が非公開の場合、投稿者にしか投稿は見られないようにする -->
+      <% if post.is_deleted == false || @user == current_user %>
+        <div class="mx-auto text-center mb-2">
+          <%= link_to post_path(post.id) do %>
+            <h3 class="text-light"><i class="fa-solid fa-link"></i> <%= post.title %></h3> <br />
+            <%= image_tag post.get_image, size: "150x150" %>
+          <% end %>
+        </div>
       </div>
+      <table class="table table-striped mx-auto col-11 col-lg-8 my-2">
+        <tr>
+          <th>投稿日 :</th>
+          <td><%= post.created_at.strftime('%Y/%m/%d') %></td>
+        </tr>
+        <tr>
+          <th>場所 :</th>
+          <td><%= post.area_i18n %></td>
+          <td><%= post.prefecture_i18n %></td>
+          <td><%= post.location %></td>
+        </tr>
+        <tr>
+          <th>カテゴリ :</th>
+          <td><%= post.category.name %></td>
+        </tr>
+        <tr>
+          <th>いいね <i class="far fa-thumbs-up"></i> :</th>
+          <td><%= post.favs.count %></td>
+        </tr>
+        <tr>
+          <th>コメント <i class="far fa-comments"></i> :</th>
+          <td><%= post.comments.count %></td>
+        </tr>
+      </table>
+      <% end %>
     </div>
-    <table class="table table-striped mx-auto col-11 col-lg-8 my-2">
-      <tr>
-        <th>投稿日 :</th>
-        <td><%= post.created_at.strftime('%Y/%m/%d') %></td>
-      </tr>
-      <tr>
-        <th>場所 :</th>
-        <td><%= post.area_i18n %></td>
-        <td><%= post.prefecture_i18n %></td>
-        <td><%= post.location %></td>
-      </tr>
-      <tr>
-        <th>カテゴリ :</th>
-        <td><%= post.category.name %></td>
-      </tr>
-      <tr>
-        <th>いいね <i class="far fa-thumbs-up"></i> :</th>
-        <td><%= post.favs.count %></td>
-      </tr>
-      <tr>
-        <th>コメント <i class="far fa-comments"></i> :</th>
-        <td><%= post.comments.count %></td>
-      </tr>
-    </table>
-  </div>
-  <% end %>
-  <% end %>
+    <% end %>
   <div class="container col-9"><%= paginate @posts, theme: 'twitter-bootstrap-4' %></div>
   <% else %>
     <p class="text-center">ドライブデータは、まだありません。</p>
