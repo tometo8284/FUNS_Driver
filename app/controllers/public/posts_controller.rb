@@ -22,10 +22,9 @@ class Public::PostsController < ApplicationController
     @post = Post.find(params[:id]) 
     @user = @post.user 
     @maps = @post.maps
-    # 非公開の投稿は投稿者しか見られないようにする処理
-    if @post.is_deleted == false || @user == current_user
-    else
-      redirect_to root_path
+    # 退会済みのユーザーの投稿は見られないようにし、非公開の投稿は投稿者しか見られないようにする処理
+    unless @post.is_deleted == false && @user.is_deleted == false || @user == current_user
+      redirect_to root_path, notice: '＊投稿が非公開、またはユーザーが退会済みの為、アクセスできません' 
     end
     @comment = Comment.new
   end

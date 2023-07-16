@@ -41,8 +41,8 @@
     <br />
     <h4 class="mt-3">
       ※ピンを立てると自動で経度と緯度は入力されます。必要に応じてピンの説明と画像を挿入してください。<br />
-      一番上には検索時のマーカー情報が入ります。<br />
-      その下から、それぞれマーカー1~4の情報を入力して下さい。
+      一番上(0マーカー)には検索時のマーカー(数字なし赤色マーカー)の情報が入ります。<br />
+      その下から、それぞれ1~4マーカーの情報を入力して下さい。
     </h4>
     
     <!-- iの初期値 -->
@@ -74,29 +74,35 @@
     <% end %>
   </div>
   
-  <h2>Map</h2>
-  <div class="row">
-    <div class="col-4"><input id="address" class="form-control" placeholder="住所を入力してください"></div>
-    <div class="py-1 col-1"><input type="button" value="検索" onclick="codeAddress()"></div>
+  <div class="bg-light p-2">
+    <h2>Map</h2>
+    <p>＊まず初めに、地名を検索をしてください。</p>
+    <div class="row">
+      <div class="col-5"><input id="address" class="form-control" placeholder="住所を入力してください"></div>
+      <div class="col-2"><input type="button" value="検索" onclick="codeAddress()" disable="disable" class="rounded btn btn-success col-12"></div>
+    </div>
+    <p class="pt-1">
+      <検索時のマーカーはドラック＆ドロップで位置の調整ができます。><br />
+      <右クリックで1~4の画像と説明文を入れるマーカーを作成、もう一度右クリックで削除できます。><br />
+      <左クリックで走行経路にマーカーを落として線を引けます。></p>
+    <div id='map'></div>
+    <style>
+      #map {
+        height: 700px;
+        width: 100%;
+      }
+    </style>
+    <div class="text-center mt-3 pb-3">
+      <p class="text-center h5">＊下のボタンでラインの削除を行えます。</p>
+      <span class="pr-4">
+      　<input type="button" value="lineを全て削除" id="removeLine" class="btn btn-light border shadow" />
+      </span>
+      <sapn>
+        <input type="button" value="lineを一つずつ削除" id="delLine" class="btn btn-light border shadow" />
+      </span>
+    </div>
   </div>
-  <p>まず初めに検索をしてください。<br />
-    検索時のマーカーはドラック＆ドロップで位置の調整ができます。<br />
-    右クリックで1~4の画像と説明文を入れるマーカーを作成、もう一度右クリックで削除できます。<br />
-    左クリックで走行経路にマーカーを落として線を引けます。</p>
-  <div id='map'></div>
-  <div class="text-center mt-3">
-  <p class="text-center h5">下のボタンでラインの削除を行えます。</p>
-  <span class="mr-4">
-  <input type="button" value="全てのラインを削除" id="removeLine" /></span>
-  <sapn><input type="button" value="ラインを一つ削除" id="delLine" /></span>
-  </div>
-  <style>
-    #map {
-      height: 700px;
-      width: 100%;
-    }
-  </style>
-
+  
   <div class="row mt-5">
     <div class="col-3 text-center">
       <%= f.radio_button :is_deleted, :false %>

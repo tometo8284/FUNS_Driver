@@ -41,7 +41,7 @@ class Post < ApplicationRecord
   end
   
   def self.ransackable_attributes(auth_object = nil)
-    ["location", "category_id", "area", "prefecture", "vehicle", "created_at", "favs_count", "comments_count"]
+    ["location", "category_id", "area", "prefecture", "vehicle", "created_at", "favs_count", "comments_count", "is_deleted"]
   end
   
   ransacker :favs_count do

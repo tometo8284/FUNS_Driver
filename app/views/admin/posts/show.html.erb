@@ -17,6 +17,7 @@
           <%= @post.user.nick_name %>
         <% end %>
       </td>
+      <td><%= @post.user.is_deleted?? '退会済み' : '有効' %></td> 
     </tr>
     <tr>
       <th>投稿日</th>
@@ -31,7 +32,7 @@
       <td><%= @post.category.name %></td>
     </tr>
     <tr>
-      <th>エリア</th>
+      <th>ロケーション</th>
       <td><%= @post.area_i18n %></td>
   　　<td><%= @post.prefecture_i18n %></td>
   　　<td><%= @post.location %></td>

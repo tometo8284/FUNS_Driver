@@ -8,38 +8,41 @@
       <strong><%= @post.is_deleted?? '非公開' : '公開' %></strong>
     <% end %>
   </div>
-  <table class="table bg-light rounded">
-    <tr>
-      <th>投稿者</th>
-      <td>
+  <div class="bg-light rounded mb-2 col-12">
+    <div class="row py-3 border-bottom">
+      <span class="col-4">投稿者 :</span>
+      <span class="h5 ">
         <%= link_to user_path(@user) do %>
            <i class="fa-solid fa-link"></i> <span class="text-dark"><%= @post.user.nick_name %></span>
         <% end %>
-      </td>
-    </tr>
-    <tr>
-      <th>投稿日</th>
-      <td><%= @post.created_at.strftime('%Y/%m/%d') %></td>
-    </tr>
-    <tr>
-      <th>ドライブメモ</th>
-      <td><%= @post.describe %></td>
-    </tr>
-    <tr>
-      <th>カテゴリ</th>
-      <td><%= @post.category.name %></td>
-    </tr>
-    <tr>
-      <th>エリア</th>
-      <td><%= @post.area_i18n %></td>
-　　　<td><%= @post.prefecture_i18n %></td>
-　　　<td><%= @post.location %></td>
-    </tr>
-    <tr>
-      <th>乗り物区分</th>
-      <td><%= @post.vehicle_i18n %></td>
-    </tr>
-  </table>
+      </span>
+    </div>
+    <div class="row py-3 border-bottom">
+      <span class="col-4 ">投稿日 :</span>
+      <span class="h5"><%= @post.created_at.strftime('%Y/%m/%d') %></span>
+    </div>
+    <div class="row py-3 border-bottom">
+      <span class="col-4">ドライブメモ :</span>
+      <span class="h5 p-1 text-break"><%= @post.describe %></span>
+    </div>
+    <div class="row py-3 border-bottom">
+      <span class="col-4">カテゴリ :</span>
+      <span class="h5"><%= @post.category.name %></span>
+    </div>
+    
+    <div class="row pt-2 pb-3 border-bottom">
+      <div class="col-4">ロケーション :</div>
+      <div class="col-8">
+      <span class="h5">・<%= @post.area_i18n %></span>
+　　　<span class="h5">・<%= @post.prefecture_i18n %></span>
+　　　<span class="h5 text-break"><%= @post.location %></span>
+　　</div>
+    </div>
+    <div class="row py-3 border-bottom">
+      <span class="col-4">乗り物区分 :</span>
+      <span class="h5"><%= @post.vehicle_i18n %></span>
+    </div>
+  </div>
   
   <div id='map'></div>
   <style>

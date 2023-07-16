@@ -41,8 +41,8 @@
     <br />
      <h4 class="mt-3">
       ※必要に応じてピンの説明と画像を挿入してください。<br />
-      一番上には検索時のマーカー(赤マーカー)の情報が入ります。<br />
-      その下から、それぞれマーカー1~4の情報を入力して下さい。
+      一番上(0マーカー)には数字なし赤色マーカーの情報が入ります。<br />
+      その下から、それぞれ1~4マーカーの情報を入力して下さい。
     </h4>
     
     <!-- iの初期値 -->
@@ -75,19 +75,35 @@
       <p ><%= lf.text_field :line_lng %></p>
     <% end %>
   </div>
-  <h2>Map</h2>
-    <p>赤色マーカーをドラック＆ドロップで位置の調整ができます。<br />
-    右クリックで黄色マーカー<p>
-    <input id="disable" type="button" value="lineを全て消す" />
-    <input id="resetLine" type="button" value="lineを元に戻す" />
-    <input id="enable" type="button" value="lineを一つずつ削除" />
+  
+  <div class="bg-light p-2">
+    <h2>Map</h2>
+    <p>
+      <赤色マーカー(数字付きマーカー含む)は、ドラック＆ドロップで位置の調整ができます。><br />
+      <右クリックで1~4の数字付きマーカーの生成、マーカーに合わせて右クリックで削除ができます。<br />
+      <u>＊数字なし赤色マーカーは削除できません。></u><br />
+      <左クリックで走行経路にマーカーを落として線を引けます。>
+    </p>
     <div id='map'></div>
-  <style>
-    #map {
-      height: 600px;
-      width: 100%;
-    }
-  </style>
+    <style>
+      #map {
+        height: 600px;
+        width: 100%;
+      }
+    </style>
+    <div class="text-center mt-3 pb-3">
+      <p class="text-center h5">＊下のボタンでラインの削除やリセットを行えます。</p>
+      <span>
+        <input id="removeLine" type="button" value="lineを全て消す" class="btn btn-light border shadow" />
+      </span>
+      <span class="px-3">
+        <input id="resetLine" type="button" value="lineを元に戻す" class="btn btn-light border shadow" />
+      </span>
+      <span>
+        <input id="delLine" type="button" value="lineを一つずつ削除" class="btn btn-light border shadow" />
+      </span>
+    </div>
+  </div>
   
   <div class="row mt-4">
     <div class="col-4 text-center">
@@ -119,9 +135,9 @@
   let polyline
   var linePath = null;
   let lineCoordinates = [];
-  let disable = document.getElementById("disable")
+  let removeLine = document.getElementById("removeLine")
   let resetLine = document.getElementById("resetLine")
-  let enable = document.getElementById("enable")
+  let delLine = document.getElementById("delLine")
   let markerData = <%== @post.maps.map {|o| { lat: o['lat'], lng: o['lng'] } }.to_json %>
   let imageData = <%== @post.maps.map {|o| { get_marker_image: rails_representation_path(o.get_marker_image) }}.to_json %>
   let describeData = <%== @post.maps.map {|o| { marker_describe: o['marker_describe'] }}.to_json %>
@@ -289,7 +305,7 @@
     
     //既存のラインの削除処理
     lineMarker.forEach((marker, index) => {
-      enable.addEventListener('click', function(){
+      delLine.addEventListener('click', function(){
         lineCoordinates.splice(index -1, 1);
         linePath.setMap(null);
         document.getElementById(`post_map_lines_attributes_${index}_line_lat`).value = 0
@@ -301,7 +317,7 @@
     
   //ラインを追加+追加したラインの削除処理
     //ボタンで発火。全てのlineを削除する処理
-    disable.addEventListener('click', function() {
+    removeLine.addEventListener('click', function() {
       for (var i = lineMarker.length - 1; i >= 0; i--) {
         removeMarker(i);
         linePath.setMap(null);
@@ -311,7 +327,7 @@
     });
     
     //ボタンで発火。最後に引かれたlineを削除
-    enable.addEventListener("click", eventEnable, false);
+    delLine.addEventListener("click", eventDelLine, false);
     
     //クリックした箇所にline用のマーカーを落とす処理
     map.addListener('click', function(e){
@@ -334,7 +350,7 @@
   }
   
    //以下line作成と削除の処理
-  function eventEnable() {
+  function eventDelLine() {
     removeMarker(lineMarker.length - 1);
   }
   
