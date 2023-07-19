@@ -8,7 +8,7 @@ class Public::CommentsController < ApplicationController
        flash[:notice] = "コメントが追加されました。"
     else
        redirect_to post_path(post)
-       flash[:notice] = "文字を入力してください。"
+       flash[:notice] = "文章を入力してください。"
     end
   end
   

@@ -38,6 +38,7 @@
       <% end %>
     </span>
   </div>
+  <div class="p-2 text-center"><u><%= flash[:notice] %></u></div>
   <div class="row mt-5 mx-auto">
     <p class="col-lg-4 col-sm-5 text-center"><%= image_tag @user.get_profile_image, size: "200x200", class: "rounded" %></p>
     <div class="col-lg-8 col-sm-7">
@@ -46,11 +47,14 @@
       <li class="h5">年齢 : <%= @user.age %></li>
       <li class="h5">性別 : <%= @user.gender_i18n %></li>
       <li class="h5">投稿数 : <%= @user.posts.count %></li>
+      <li class="h5">フォロー数 : <%= @user.followings.count %></li>
+      <li class="h5">フォロワー数 : <%= @user.followers.count %></li>
     </div>
   </div>
   <div class="col-lg-4 col-sm-5 text-center">
     <% if @user == current_user %>
       <%= link_to "編集", edit_user_path(current_user.id), class: "btn btn-secondary" %>
+      <p class="mt-2">こちらからアカウント情報の編集ができます。</p>
     <% end %>
   </div>
 </div>

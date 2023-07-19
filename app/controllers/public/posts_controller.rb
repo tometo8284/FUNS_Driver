@@ -3,8 +3,10 @@ class Public::PostsController < ApplicationController
   before_action :is_matching_login_user, only: [:edit, :update, :destroy]
   def new
     @post = Post.new
+    # 画像や文章を入れ込めるフォーム作成の為の記述であるため、処理が重くならないように制限する
     5.times { @post.maps.build }
-    20.times { @post.map_lines.build }
+    # line様のフォーム作成の為の記述であるため、自由に線が引けるよう制限を設けない
+    @post.map_lines.build 
   end
 
   def create

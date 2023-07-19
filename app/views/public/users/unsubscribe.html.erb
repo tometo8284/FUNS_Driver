@@ -9,8 +9,8 @@
       </div>
       <div>以上の点をご理解頂き、退会される際は下記 <u>退会する</u> をクリックしてください。</div>
        <div class="mt-5 text-center">
-          <%= link_to "退会する", withdrawl_path(@user.id), method: :patch, data: { confirm: "本当に退会しますか？"}, class: "btn btn-danger col-1" %>
-          <%= link_to "戻る", user_path(current_user.id), class: "ml-5 btn btn-primary col-5" %>
+          <%= link_to "退会する", withdrawl_path(@user.id), method: :patch, data: { confirm: "本当に退会しますか？"}, class: "btn btn-danger col-3 col-lg-1" %>
+          <%= link_to "戻る", user_path(current_user.id), class: "ml-5 btn btn-primary col-7 col-lg-5" %>
       </div>
     </div>
   </div>

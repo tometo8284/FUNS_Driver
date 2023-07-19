@@ -1,4 +1,4 @@
-<div class="container mt-5 col-lg-5 text-center">
+<div class="container mt-5 col-lg-7 col-9 text-center">
   <p><%= notice %></p>
   <% if @category.errors.any? %>
     エラーが発生しました
@@ -12,7 +12,7 @@
     <div class="row">
       <label class="col-3 p-1 h5">新規追加</label>
       <%= f.text_field :name, placeholder: "カテゴリ名を入力してください", class: "col-6 mr-3" %>
-      <%= f.submit "新規登録", class: "btn btn-success col-2" %>
+      <%= f.submit "新規登録", class: "btn btn-success col-2 mx-2 text-center" %>
     </div>
   <% end %>
   <table class="table">
@@ -22,7 +22,7 @@
         <tr>
           <td><%= category.name %></td>
           <td><%= link_to "編集", edit_admin_category_path(category.id), class: "btn btn-secondary" %></td>
-          <td><%= link_to "削除", admin_category_path(category.id), method: :delete, class: "btn btn-danger" %></td>
+          <td><%= category.updated_at.strftime('%Y/%m/%d') %></td>
         </tr>
       <% end %>
     </tbody>
