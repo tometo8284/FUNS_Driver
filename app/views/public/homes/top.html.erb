@@ -1,11 +1,14 @@
 <div class="container col-lg-10 mt-2 mx-auto text-center">
   <div class="container">
-    <h2 class="mx-auto p-3"><u>お気に入りのドライブコースが 見つかる・紹介できる！</u></h2>
+    <h2 class="foo mx-auto p-3">お気に入りのドライブコースが 見つかる・紹介できる！</h2>
     <div class="card" style="col-12">
-      <h1 class="w-100 text-center position-absolute p-4 text-warning"><i class="fas fa-car"></i> FUNs_Driver</h1>
+      <h1 class="foo w-100 text-center position-absolute p-4 text-warning"><i class="fas fa-car"></i> FUNs_Driver</h1>
       <img class="card-img" height="500" src= "/assets/tunoshima_oohashi.jpg", class: "col-12", size: '100x450' >
     </div>
     <p class="py-4 h4 text-success"><%= notice %></p>
+    <% unless user_signed_in? || admin_signed_in? %>
+      <p class="text-danger">※ログイン後に投稿やコメント・いいねを残すことができます。</p>
+    <% end %>
     <h1><i class="fas fa-map-marker-alt"></i>ドライブデータ一覧</h1>
     <div class="row mx-auto bg-light rounded">
       <h3 class="col-lg-4 pt-3">人気のカテゴリ <i class="fas fa-tags"></i></h3>

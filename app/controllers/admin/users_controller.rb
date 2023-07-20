@@ -24,11 +24,13 @@ class Admin::UsersController < ApplicationController
   
   def user_post
     @user = User.find(params[:id])
+    # 順番を新着順に並べ替える
     @posts = @user.posts.page(params[:page]).order("created_at desc")
   end
   
   def user_comment
     @user = User.find(params[:id])
+    # 順番を新着順に並べ替える
     @comments = @user.comments.order("created_at desc")
   end
   

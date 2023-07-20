@@ -1,12 +1,10 @@
 class Public::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :is_matching_login_user, except: [:show, :user_post, :user_fav]
+  before_action :is_deleted_user
   
   def show
     @user = User.find(params[:id])
-    if @user.is_deleted == true 
-      redirect_to root_path, notice: '＊ユーザーが退会済みの為、アクセスできません'
-    end
   end
 
   def edit
@@ -52,10 +50,19 @@ private
     params.require(:user).permit(:name, :nick_name, :profile_image, :email, :introduction, :address, :age, :gender, :is_deleted)
   end
   
+  # ログインしているユーザー本人とは違うユーザーのアクセスを制限するメソッド
   def is_matching_login_user
     user = User.find(params[:id])
       unless user.id == current_user.id
-        redirect_to current_user
+        redirect_to current_user, notice: 'そちらのページへのアクセスはできません'
       end
+  end
+  
+  # 退会済みユーザーへアクセスできないようにするメソッド
+  def is_deleted_user
+    user = User.find(params[:id])
+    if user.is_deleted == true
+      redirect_to root_path, notice: '＊ユーザーが退会済みの為、アクセスできません'
+    end
   end
 end

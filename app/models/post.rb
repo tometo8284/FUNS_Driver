@@ -13,7 +13,6 @@ class Post < ApplicationRecord
   validates :describe, presence: true, length: { maximum: 200 }
   validates :location, presence: true
   
-  
   def blank_lat_lng(attributes)
     empty = !attributes['lat'].present? || !attributes['lng'].present?
     exists = attributes['id'].present?
@@ -28,6 +27,7 @@ class Post < ApplicationRecord
     !exists && empty
   end
   
+  # 画像が挿入されなかった場合に表示する画像と画像サイズのバリデーション
   def get_image
     unless image.attached?
       file_path = Rails.root.join('app/assets/images/no_fhoto.jpg')
@@ -40,15 +40,18 @@ class Post < ApplicationRecord
     favs.exists?(user_id: user.id)
   end
   
+  # 各モデルの絞り込み検索を許可するメソッド
   def self.ransackable_attributes(auth_object = nil)
     ["location", "category_id", "area", "prefecture", "vehicle", "created_at", "favs_count", "comments_count", "is_deleted"]
   end
   
+  # いいね数をカウントし、並べ替えるメソッド
   ransacker :favs_count do
     query = '(SELECT COUNT(favs.post_id) FROM favs where favs.post_id = posts.id GROUP BY favs.post_id)'
     Arel.sql(query)
   end
   
+  # コメント数をカウントし、並べ替えるメソッド
   ransacker :comments_count do
     query = '(SELECT COUNT(comments.post_id) FROM comments where comments.post_id = posts.id GROUP BY comments.post_id)'
     Arel.sql(query)

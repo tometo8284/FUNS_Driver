@@ -1,3 +1,14 @@
 // Place all the styles related to the public/homes controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+@font-face {
+  font-family: 'NikkyouSans'; 
+  src: font-url('/assets/NikkyouSans-mLKax.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.foo {
+  font-family: 'NikkyouSans';
+}

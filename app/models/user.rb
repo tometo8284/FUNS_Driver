@@ -30,6 +30,7 @@ class User < ApplicationRecord
     followings.include?(user)
   end
   
+  # 画像が挿入されなかった場合に表示する画像と画像サイズのバリデーション
   def get_profile_image
     unless profile_image.attached?
       file_path = Rails.root.join('app/assets/images/no_person.jpg')
