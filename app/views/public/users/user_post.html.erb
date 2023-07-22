@@ -5,14 +5,14 @@
     <div class="row mb-4">
       <!-- 投稿が非公開の場合、投稿者にしか投稿は見られないようにする -->
       <% if post.is_deleted == false || @user == current_user %>
-        <div class="row mx-auto col-11 col-lg-4 bg-success rounded">
+        <div class="img-meter row mx-auto col-11 col-lg-4 rounded">
           <% if @user == current_user %>
             <strong class="text-light my-auto col-12"><u><%= post.is_deleted?? '非公開' : '公開中' %></u></strong>
           <% end %>
           <div class="mx-auto text-center mb-2">
             <%= link_to post_path(post.id) do %>
               <h3 class="text-light"><i class="fa-solid fa-link"></i> <%= post.title %></h3> <br />
-              <%= image_tag post.get_image, size: "150x150" %>
+              <%= image_tag post.get_image, size: "150x150", class: "rounded" %>
             <% end %>
           </div>
         </div> 

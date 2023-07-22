@@ -25,6 +25,8 @@ class Public::SessionsController < Devise::SessionsController
   # def configure_sign_in_params
   #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
   # end
+  
+  # ゲストログイン機能
   def guest_sign_in
     user = User.guest
     sign_in user
@@ -33,6 +35,7 @@ class Public::SessionsController < Devise::SessionsController
   
   protected
   
+  # 退会済みユーザーがログインできないようにするメソッド
   def user_state
     @user = User.find_by(email: params[:user][:email])
     return if !@user

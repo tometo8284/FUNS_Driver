@@ -8,6 +8,7 @@
           <th>投稿主</th>
           <th>カテゴリ</th>
           <th>場所</th>
+          <th colspan="1"></th>
         </tr>
       </thead>
       <tbody>
@@ -17,16 +18,34 @@
             <%= image_tag fav.post.get_image, size: "100x100" %>
             <br />
             <%= link_to post_path(fav.post) do %>
-              <i class="fa-solid fa-link"></i><span class="text-dark"><%= fav.post.title %></span>
+              <i class="fa-solid fa-link"></i> <span><%= fav.post.title %></span>
             <% end %>
           </td>
           <td>
             <%= link_to user_path(fav.post.user) do %>
-              <i class="fa-solid fa-link"></i> <span class="text-dark"><%= fav.post.user.nick_name %></span>
+              <i class="fa-solid fa-link"></i> <span><%= fav.post.user.nick_name %></span>
             <% end %>
           </td>
           <td><%= fav.post.category.name %></td>
           <td><%= fav.post.location %></td>
+          <td>
+            <% if fav.post.fav_by?(current_user) %>
+              <p>
+                <%= link_to post_favs_path(fav.post_id), method: :delete do %>
+                  <button class="btn btn-light"><i class="fas fa-heart text-danger"></i> </button> 
+                <% end %>
+                <br /><p>あなたはいいねしています</p>
+              </p>
+            <% else %>
+              <p>
+                <%= link_to post_favs_path(fav.post_id), method: :post do %>
+                  <button class="btn btn-light"><i class="far fa-heart text-primary"></i></button>
+                <% end %>
+                <br /><p>まだ、あなたはいいねしていません。</p>
+                
+              </p>
+            <% end %>
+          </td>
         </tr>
         <% end %>
       </tbody>

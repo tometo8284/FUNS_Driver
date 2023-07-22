@@ -58,6 +58,7 @@ class Public::PostsController < ApplicationController
     params.require(:post).permit(:category_id, :title, :describe, :area, :prefecture, :location, :vehicle, :is_deleted, :image, maps_attributes: [:id, :lat, :lng, :marker_describe, marker_image: []], map_lines_attributes: [:id, :line_lat, :line_lng])
   end
   
+  #  ログインしているユーザー本人とは違うユーザーのアクセスを制限するメソッド
   def is_matching_login_user
     @post = Post.find(params[:id])
       unless @post.user.id == current_user.id
