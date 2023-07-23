@@ -3,12 +3,12 @@
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
 .img-meter {
-  background-image: url("/assets/speedometer.jpg");
+  background-image: image-url("speedometer.jpg");
   background-size: cover;
 }
 
 .img-cars-1 {
-  background-image: url("/assets/cars-1.jpg");
+  background-image: image-url("cars-1.jpg");
   height: 1000px;
   background-size: cover;
 }
