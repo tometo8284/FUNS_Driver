@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: 'NikkyouSans'; 
-  src: font-url('/assets/NikkyouSans-mLKax.ttf') format('truetype');
+  src: url('/fonts/NikkyouSans-mLKax.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
