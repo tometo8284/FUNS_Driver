@@ -17,7 +17,7 @@
     <div class="row mt-2 mb-3">
       <label class="pl-4 col-3">TOP画像 :</label>
       <div class="col-9">
-        <%= image_tag "/assets/no_fhoto.jpg", size: "200x200", id: :img_prev %>
+        <%= image_tag asset_path('no_fhoto.jpg'), size: "200x200", id: :img_prev %>
         <%= f.file_field :image, id: :image, class: "mt-1" %>
       </div>
     </div>
@@ -61,7 +61,7 @@
         <p class="col-7"><%= kf.text_area :marker_describe, class: "form-control" %></p>
       </div>
         <label class="col-3"><%= i %>マーカー地点の画像</label>
-        <%= image_tag "/assets/no_fhoto.jpg", size: "50x50", id: "img_marker_prev_#{i}" %>
+        <%= image_tag asset_path('no_fhoto.jpg'), size: "50x50", id: "img_marker_prev_#{i}" %>
         <%= kf.file_field :marker_image, accept: "image/*", multiple: true %>
       <br />
     </div>
