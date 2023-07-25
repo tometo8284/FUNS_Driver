@@ -4,16 +4,11 @@
 
 @font-face {
   font-family: 'NikkyouSans'; 
-  src: font-url('/assets/NikkyouSans-mLKax.ttf') format('truetype');
+  src: asset_url('NikkyouSans-mLKax.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 .foo {
   font-family: 'NikkyouSans';
-}
-
-.tunoshima-oohashi {
-  background-image: image-url("tunoshima_oohashi.jpg");
-  background-size: cover;
 }
