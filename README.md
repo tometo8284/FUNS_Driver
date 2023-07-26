@@ -60,6 +60,15 @@
 - コメントには回数制限はありませんが、いいねは一つの投稿に対し一回までとなっています。
 - コメントといいねは、ご自身の付けたもののみ、削除することができます。
 
+## テスト
+[管理者用アカウント : ログイン]
+メールアドレス : admin3@admin.com
+パスワード : admin555
+
+[ユーザーアカウント : ログイン]
+画面下部にゲストログインのリンクがございます。そちらを押下ください。
+
+
 ## 設計書							
 https://docs.google.com/spreadsheets/d/1HuzaWtXNBXkDA0mXLQ_8G7ctffxBQ_FCO18E_lnLbEo/edit?usp=sharing							
 							

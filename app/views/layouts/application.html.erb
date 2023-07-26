@@ -113,7 +113,7 @@
     <footer class="mx-auto pt-5">
       <div class="container">
         <% unless user_signed_in? || admin_signed_in? %>
-          <%= link_to "管理者ログイン", admin_session_path %>
+          <%= link_to "管理者ログイン", admin_session_path %> /
           <%= link_to "ゲストログイン", public_guest_sign_in_path, method: :post %>
         <% end %>
       </div>
