@@ -75,14 +75,14 @@ ActiveRecord::Schema.define(version: 2023_06_28_100609) do
 
   create_table "map_lines", force: :cascade do |t|
     t.integer "post_id", null: false
-    t.float "line_lat"
-    t.float "line_lng"
+    t.float "line_lat", limit: 53
+    t.float "line_lng", limit: 53
   end
 
   create_table "maps", force: :cascade do |t|
     t.integer "post_id", null: false
-    t.float "lat"
-    t.float "lng"
+    t.float "lat", limit: 53
+    t.float "lng", limit: 53
     t.text "marker_describe"
   end
 
