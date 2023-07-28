@@ -5,10 +5,40 @@
 .img-meter {
   background-image: image-url("speedometer.jpg");
   background-size: cover;
+  position: relative;
+ 
 }
 
 .img-cars-1 {
   background-image: image-url("cars-1.jpg");
   height: 1000px;
   background-size: cover;
+  position: relative;
+}
+
+.img-meter::before {
+  content: '';
+  background-color: rgba(0, 0, 0, .4); 
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: 40px;
+} 
+
+.title {
+  z-index: 1;
+}
+
+
+.img-cars-1::before {
+  content: '';
+  background-color: rgba(0, 0, 0, .2); 
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
