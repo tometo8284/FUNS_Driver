@@ -40,10 +40,10 @@
       </span>
     </div>
     <div class="p-2 text-light"><u><%= flash[:notice] %></u></div>
-    <div class="row mt-5 mx-auto ">
+    <div class="row mt-5 mx-auto">
       <p class="col-lg-4 col-sm-5 text-center"><%= image_tag @user.get_profile_image, size: "200x200", class: "rounded" %></p>
       <div class="col-lg-8 col-sm-7 text-light bg-dark rounded">
-        <li class="h5">自己紹介 : <%= @user.introduction %></li>
+        <li class="h5 pt-2">自己紹介 : <%= @user.introduction %></li>
         <li class="h5 py-2">所在地 : <%= @user.address %></li>
         <li class="h5">年齢 : <%= @user.age %></li>
         <li class="h5 py-2">性別 : <%= @user.gender_i18n %></li>
