@@ -43,6 +43,11 @@ class Public::UsersController < ApplicationController
     @favs = @user.favs.order("created_at desc")
   end
   
+  def dm_show
+    @user = current_user
+    @dm = @user.dms
+  end
+  
   
   
 private

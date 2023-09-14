@@ -1,0 +1,10 @@
+<% visitor = notification.visitor %>
+<% visited = notification.visited %>
+<div class="bg-light pb-1">
+  <%= visitor.nick_name %>さん
+  <% if notification.action =='dm' %>
+  からの通知
+    <%= notification.created_at.strftime('%Y/%m/%d') %>
+    <%= time_ago_in_words(notification.created_at).upcase %> 前
+  <% end %>
+</div>

@@ -1,0 +1,32 @@
+<div class="container mt-2">
+  <h3 class="text-center">ユーザールーム一覧</h3>
+  <% notifications = @notifications.where.not(visitor_id: current_admin.id) && @notifications.where.not(is_admin: true) %>
+    <div class="accordion mt-2 col-12 text-center mx-auto" id="accordionExample">
+    <div class="card">
+      <div class="card-header" id="heading1">
+        <h2 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">通知ログの表示</button>
+        </h2>
+      </div>
+      <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionExample">
+        <div class="card-body">
+          <% if notifications.exists? %>
+            <%= render notifications.order("created_at desc") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% @users.each do |user| %>
+    <h6 class="col-8 py-3">・<%= user.nick_name %>さんとのチャットルーム</h6>
+    <!-- もしチャットルームがあったらそのチャットページへ。なければ新たなチャットルームを作成 -->
+    <% if @user_ids.include?(user.id) %>
+      <div class="col-3"><%= link_to "チャットへ", admin_room_path(current_admin.rooms.find_by(user_id: user.id)), class: "ml-3 btn btn-primary" %><br></div>
+    <% else %>
+      <%= form_with model: @room do |f| %>
+        <%= f.hidden_field :user_id, :value => user.id %>
+        <div class="col-3"><%= f.submit "チャットルームの作成", class: "btn btn-light" %></div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

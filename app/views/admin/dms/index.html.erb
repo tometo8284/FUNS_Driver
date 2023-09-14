@@ -1,0 +1,13 @@
+<div>
+  <%= @user.nick_name %>
+  <% @dms.each do |dm| %>
+    <%= dm.title %>
+    <%= dm.message %>
+  <% end %>
+  
+  <%= form_with model: @dm do |f| %>
+    <%= f.text_field :title %>
+    <%= f.text_area :message %>
+    <%= f.submit '送信' %>
+  <% end %> 
+</div>

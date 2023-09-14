@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     post 'public/guest_sign_in', to: 'public/sessions#guest_sign_in'
   end
   
-  devise_for :admins, controllers: {
+  devise_for :admins, skip: [:registrations, :passwords], controllers: {
     sessions: "admin/sessions"
   }
   
@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     patch 'users/:id/withdrawl', to: 'users#withdrawl', as: 'withdrawl'
     get 'users/:id/user_post', to: 'users#user_post', as: 'user_post'
     get 'users/:id/user_fav', to: 'users#user_fav', as: 'user_fav'
+    get 'users/:id/dm_show', to: 'users#dm_show', as: 'dm_show'
     resources :users, only: [:show, :edit, :update] do
       resource :relationships, only: [:create, :destroy]
       get 'followings' => 'relationships#followings', as: 'followings'
@@ -26,17 +27,25 @@ Rails.application.routes.draw do
       resources :comments, only: [:create, :edit, :destroy]
       resource :favs, only: [:create, :destroy]
     end
+    resources :rooms, :only => [:show, :create] do
+      resources :dms, :only => [:create]
+    end
+    resources :notifications, only: [:index, :update]
   end
   
   namespace :admin do
     root to: 'homes#top'
     get 'users/:id/user_post', to: 'users#user_post', as: 'user_post'
     get 'users/:id/comments', to: 'users#user_comment', as: 'user_comment'
-    resources :users, only: [:index, :show, :edit, :update]
+    resources :users, only: [:index, :show, :edit, :update] 
     resources :posts, only: [:show, :destroy] do
       resources :comments, only: [:destroy]
     end
     resources :categories, only: [:create, :index, :edit, :update]
+    resources :rooms, :only => [:index, :show, :create] do
+      resources :dms, :only => [:create]
+    end
+    resources :notifications, only: [:index]
   end
   
   

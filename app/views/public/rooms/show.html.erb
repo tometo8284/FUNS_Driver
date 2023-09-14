@@ -1,0 +1,42 @@
+<div class="container text-center mt-2">
+  <h1>管理者とのチャットルーム</h1>
+  <div class="chat-field">
+    <% notifications = @room.notifications.where.not(visitor_id: current_user.id) && @room.notifications.where.not(is_admin: false) %>
+    <div class="accordion mt-2 mb-4 col-12 text-center mx-auto" id="accordionExample">
+      <div class="card">
+        <div class="card-header" id="heading1">
+          <h2 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">通知ログの表示</button>
+          </h2>
+        </div>
+        <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionExample">
+          <div class="card-body">
+            <% if notifications.exists? %>
+              <%= render notifications %>
+            <% else %>
+              通知はありません。
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% @room.dms.each do |dm| %>
+      <% if dm.is_user == true %>
+        <div class="text-left row bg-light p-3 m-2 rounded-pill">
+          <strong><%= dm.room.user.nick_name %></strong> :
+          <%= dm.message %>
+        </div> 
+      <% else %>
+        <div class="text-right bg-light p-3 m-2 rounded-pill">
+          <strong>管理者</strong> :
+          <%= dm.message %>
+        </div>
+      <% end %>
+    <% end %>
+    <%= form_with model: [@room, @dm], url: room_dms_path(current_user) do |f| %>
+      <div class="row mt-5 mx-auto">
+        <div class="pl-3 col-6"><%= f.text_area :message, placeholder: "50文字以内でメッセージを入力してください。", class: "form-control" %></div>
+        <div class="col-1 my-auto"><%= f.submit "送信", class: "btn btn-success" %></div>
+      </div>
+    <% end %>
+  </div>

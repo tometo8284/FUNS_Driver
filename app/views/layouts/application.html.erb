@@ -58,6 +58,15 @@
               <% end %>
             </li>
             <li class="nav-item">
+              <% if current_user.rooms.present? %> 
+                <%= link_to "・管理者報告", room_path(current_user, @room), class: 'nav-link text-dark' %>
+              <% else %>
+                <%= form_with model: @room, url: rooms_path, method: :post do |f| %>
+                  <%= f.submit "・管理者報告", class: 'nav-link btn text-dark' %>
+                <% end %>
+              <% end %>
+            </li>
+            <li class="nav-item">
               <%= link_to destroy_user_session_path, method: :delete, class: 'nav-link text-dark' do %>
                 <i class="fas fa-sign-out-alt"></i>
                 <span>ログアウト</span>
@@ -74,6 +83,12 @@
               <%= link_to admin_users_path, class: 'nav-link text-dark' do %>
                 <i class="fas fa-users"></i>
                 <span>会員一覧</span>
+              <% end %>
+            </li>
+            <li class="nav-item">
+              <%= link_to admin_rooms_path, class: 'nav-link text-dark' do %>
+                <i class="fas fa-envelope"></i>
+                <span>dm一覧</span>
               <% end %>
             </li>
             <li class="nav-item">
