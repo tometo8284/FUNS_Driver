@@ -2,7 +2,7 @@
   <div class= "text-center">
     <%= flash[:notice] %><br />
     <h1><%= @post.title %></h1>
-    <%= image_tag @post.get_image, size: "200x200" %>
+    <%= image_tag @post.get_image, size: "200x200", class: "image-cover" %>
     <br />
     <% if @user == current_user %>
       <strong><%= @post.is_deleted?? '非公開' : '公開' %></strong>
@@ -54,7 +54,7 @@
   
   <% if @user == current_user %>
   <div class="text-center mt-3">
-    <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "本当に削除しますか？" }, class: 'btn btn-danger col-2' %>
+    <%= link_to "削除", post_path(@post.id), method: :delete, data: { confirm: "このドライブデータを削除しますか？" }, class: 'btn btn-danger col-2' %>
     <%= link_to "編集", edit_post_path(@post.id), class: 'btn btn-secondary ml-5 col-4' %>
   </div>
   <% end %>
@@ -93,7 +93,7 @@
         <p>: <strong><%= comment.post_comment %></strong></p>
         <span><%= comment.created_at.strftime('%Y/%m/%d') %></span>
         <% if comment.user == current_user %>
-          <%= link_to "削除", post_comment_path(comment.post, comment.id), method: :delete %>
+          <%= link_to "削除", post_comment_path(comment.post, comment.id), method: :delete, data: { confirm: "コメントを削除しますか？" } %>
         <% end %>
       </div>
     </div>
@@ -102,7 +102,7 @@
     <% if user_signed_in? %>
       <%= form_with model: [@post, @comment] do |f| %>
         <div class="row mt-3 mx-auto">
-          <div class="pl-3 col-6"><%= f.text_area :post_comment, placeholder: "コメントをここに", class: "form-control" %></div>
+          <div class="pl-3 col-6"><%= f.text_area :post_comment, placeholder: "100文字以内でコメントを入力してください", class: "form-control" %></div>
           <div class="col-1 my-auto"><%= f.submit "送信する" , class: "btn btn-success" %></div>
         </div>
       <% end %>

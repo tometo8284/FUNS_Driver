@@ -12,14 +12,14 @@ class Public::RelationshipsController < ApplicationController
   end
   
   def followings
-    user = User.find(params[:user_id])
-    @users = user.followings
+    @user = User.find(params[:user_id])
+    @users = @user.followings
     is_deleted_user
   end
 
   def followers
-    user = User.find(params[:user_id])
-    @users = user.followers
+    @user = User.find(params[:user_id])
+    @users = @user.followers
     is_deleted_user
   end
   
