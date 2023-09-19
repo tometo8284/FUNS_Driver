@@ -40,6 +40,9 @@ class Post < ApplicationRecord
     favs.exists?(user_id: user.id)
   end
   
+  scope :published, -> { where(is_deleted: false) }  # 公開投稿のみ
+  scope :active_user, -> { joins(:user).where( user: { is_deleted: false } ) } # 退会していないユーザーの投稿
+  
   # 各モデルの絞り込み検索を許可するメソッド
   def self.ransackable_attributes(auth_object = nil)
     ["location", "category_id", "area", "prefecture", "vehicle", "created_at", "favs_count", "comments_count", "is_deleted"]

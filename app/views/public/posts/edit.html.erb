@@ -111,10 +111,12 @@
   
   <div class="row mt-4">
     <div class="col-4 text-center">
-      <%= f.radio_button :is_deleted, :false %>
-      <%= f.label :is_deleted, "公開" %> &nbsp;
-      <%= f.radio_button :is_deleted, :true %>
-      <%= f.label :is_deleted, "非公開" %>
+      <label for="false_checkbox">
+        <%= f.radio_button :is_deleted, :false, id: :false_checkbox %> 公開
+      </label> &nbsp;
+      <label for="true_checkbox">
+        <%= f.radio_button :is_deleted, :true, id: :true_checkbox %> 非公開
+      </label>
     </div>
     <div class="text-center col-8 row">
       <div class="col-7">

@@ -23,7 +23,7 @@
     </div>
     <div class="row">
       <label class="pl-4 col-3">注目ポイント :</label>
-      <div class="field_with_errors col-8"><%= f.text_area :describe,:value =>"", id: :describe, placeholder: "200文字以内で文章を入力してください", class: "form-control" %></div>
+      <div class="field_with_errors col-8"><%= f.text_area :describe, id: :describe, placeholder: "200文字以内で文章を入力してください", class: "form-control" %></div>
     </div>
     <label class="mt-3 col-3">カテゴリ選択 :</label>
       <%= f.collection_select :category_id, Category.all, :id, :name %>
@@ -106,10 +106,12 @@
   
   <div class="row mt-5">
     <div class="col-3 text-center">
-      <%= f.radio_button :is_deleted, :false %>
-      <%= f.label :is_deleted, "公開" %> &nbsp;
-      <%= f.radio_button :is_deleted, :true %>
-      <%= f.label :is_deleted, "非公開" %>
+      <label for="false_checkbox">
+        <%= f.radio_button :is_deleted, :false, id: :false_checkbox %> 公開
+      </label> &nbsp;
+      <label for="true_checkbox">
+        <%= f.radio_button :is_deleted, :true, id: :true_checkbox %> 非公開
+      </label>
     </div>
     <div class="text-center col-6">
       <%= f.submit "投稿", class: "btn btn-success col-12" %>

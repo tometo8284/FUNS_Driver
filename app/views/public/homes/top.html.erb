@@ -65,8 +65,6 @@
   </div>
   <div class="card-list-container py-3 col-lg-10 mx-auto">
     <% @posts.each do |post| %>
-    <!--非公開・退会済みユーザーの投稿を表示させないようにする処理-->
-    <% if post.is_deleted == false && post.user.is_deleted == false %>
       <div class="card w-75 mx-auto mt-4 shadow-lg">
         <%= link_to post_path(post.id) do %>
           <div class="py-2 rounded">
@@ -92,7 +90,6 @@
           </div>
         </div>
       </div>
-  　<% end %>
   　<% end %>
   　<div class="container col-9"><%= paginate @posts, theme: 'twitter-bootstrap-4' %></div>
   </div>
