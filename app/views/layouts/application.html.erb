@@ -59,10 +59,10 @@
             </li>
             <li class="nav-item">
               <% if current_user.rooms.present? %> 
-                <%= link_to "・管理者報告", room_path(current_user, @room), class: 'nav-link text-dark' %>
+                <%= link_to "ご意見・ご報告", room_path(current_user, @room), class: 'nav-link text-dark' %>
               <% else %>
                 <%= form_with model: @room, url: rooms_path, method: :post do |f| %>
-                  <%= f.submit "・管理者報告", class: 'nav-link btn text-dark' %>
+                  <%= f.submit "ご意見・ご報告", class: 'nav-link btn text-dark' %>
                 <% end %>
               <% end %>
             </li>

@@ -1,5 +1,9 @@
 <div class="container text-center mt-2">
   <h1>管理者とのチャットルーム</h1>
+  <p>
+    <i class="fas fa-truck"></i>こちらでは、当サイトの感想・改善点、何かご報告したいことなど様々なコメントを受け付けています。</br>
+    何なりと、お気軽にコメントをお寄せください！<i class="fas fa-truck"></i>
+  </p>
   <div class="chat-field">
     <% notifications = @room.notifications.where.not(visitor_id: current_user.id) && @room.notifications.where.not(is_admin: false) %>
     <div class="accordion mt-2 mb-4 col-12 text-center mx-auto" id="accordionExample">
@@ -12,7 +16,7 @@
         <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordionExample">
           <div class="card-body">
             <% if notifications.exists? %>
-              <%= render notifications %>
+              <%= render notifications.order("created_at desc") %>
             <% else %>
               通知はありません。
             <% end %>

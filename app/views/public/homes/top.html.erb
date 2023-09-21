@@ -63,14 +63,14 @@
     </div>
     <% end %>
   </div>
-  <div class="card-list-container py-3 col-lg-10 mx-auto">
+  <div class="card-list-container py-3 col-lg-6 col-12 mx-auto">
     <% @posts.each do |post| %>
-      <div class="card w-75 mx-auto mt-4 shadow-lg">
+      <div class="card mx-auto mt-4 shadow-lg">
         <%= link_to post_path(post.id) do %>
           <div class="py-2 rounded">
             <i class="fa-solid fa-link"></i> <span class="card-title h2"><%= post.title %></span>
           </div>
-          <%= image_tag post.get_image, class: "card-img-top"; %>
+          <%= image_tag post.get_image, size: "500x500", class: "card-img-top image-cover" %>
         <% end %>
         <div class="card-body">
           <div class="row text-left">
