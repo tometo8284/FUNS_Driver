@@ -36,7 +36,7 @@
     <br />
     <div class="row">
       <label class="pl-4 col-3">地名 :</label>
-       <span class="col-4"><%= f.text_field :location, autofocus: true %></span>
+       <span class="col-4"><%= f.text_field :location %></span>
     </div>
     <label class="col-3 mt-2">乗り物区分 :</label>
       <%= f.select :vehicle, Post.vehicles.keys.map{|k| [t("enums.post.vehicle.#{k}"), k] } %> 
